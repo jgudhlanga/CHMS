@@ -1,0 +1,34 @@
+.body{
+    background: -webkit-gradient(linear, 0%, 0%, 0%, 100% from(#5cb85c), to(#fff));/*Safari 4-5, Chrome 1-9*/
+    background: -webkit-linear-gradient(top, #5cb85c, #fff); /*Safari 5.1, Chrome 10+*/
+    background: -moz-linear-gradient(top,#5cb85c , #fff);/*Firefox 3.6+*/
+    background: -ms-linear-gradient(top,#5cb85c , #fff);/*IE 10*/
+    background: -o-linear-gradient(top, #5cb85c , #fff);/*Opera 11.10+*/
+    background-repeat: no-repeat;
+
+}
+.loginLogo{ text-align: center; }
+.form-sign-in
+{
+    max-width: 300px;  padding: 30px;  margin-left:  auto; margin-right:  auto; margin-top: 150px;
+    border: 1px #cacaca  solid;
+    background-color: #fff;
+    -webkit-border-radius: 5px; -moz-border-radius: 5px; -border-radius: 5px;
+    box-shadow:  2px 2px 2px 2px #306130;
+}
+.form-sign-in .form-sign-in-heading,
+.form-sign-in .checkbox {  margin-bottom: 10px;}
+.form-sign-in .checkbox { font-weight: normal;}
+.form-sign-in .form-control { position: relative; height: auto; -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; box-sizing: border-box;
+    padding: 10px; font-size: 16px;
+}
+.form-sign-in .form-control:focus { z-index: 2;}
+.form-sign-in input[type="text"]
+{
+    margin: 0 0 20px 0;  -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
+}
+.form-sign-in input[type="password"]
+{
+    margin-bottom: 20px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;
+}
