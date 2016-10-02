@@ -1,0 +1,21 @@
+<form class="form-sign-in" method="post">
+<!--<h2 class="form-sign-in-heading">Please sign in</h2>-->
+<!--<div class="loginLogo"><?php echo loadImage(Null, Null, 'login.png', 100, 140); ?></div>-->
+<?php if (isset($this->sError))
+	echo "<div id='alert' class='alert alert-danger' role='alert'>".$this->translate($this->sError)."</div>";
+?>
+<label for="inputUsername" class="sr-only"><?php echo $this->translate('Username')?></label>
+<input type="text" name="username" id="inputUsername" class="form-control" placeholder="<?php echo  $this->translate('Email address')?>" required autofocus>
+<label for="inputPassword" class="sr-only"><?php echo  $this->translate('Password')?></label>
+<input type="password" name="password" id="inputPassword" class="form-control" placeholder="<?php echo $this->translate('Password')?>">
+<!--<div class="checkbox">
+ <label>
+	<input type="checkbox" value="remember-me"> Remember me
+ </label>
+</div>-->
+<button class="btn btn-lg btn-default btn-block" type="submit" name="command"  value="<?php echo $this->translate('Sign in')?>">
+	<?php echo $this->translate('Sign in')?>
+</button>
+</form>
+
+<?php echo showMessage('alert')?><!--the error message should show only for a snippet of time-->

@@ -1,0 +1,176 @@
+
+<script type="text/javascript">
+
+	function Gladiator(name, age, id, passport, nationality)
+	{
+		this.name = name;
+		this.age= age ;
+		this.id= id ;
+		this.passport = passport;
+		this.nationality = nationality;
+	}
+	Gladiator.prototype.sayName=function(){
+		console.log("Hie my Name is "+this.name);
+	};
+	/*function makeGladiator(name, age, id, passport, nationality)
+	{
+		/*return {
+			name: name, age: age, id: id, passport: passport, nationality: nationality,
+			sayName: function(){
+				console.log("Hie my Name is "+this.name);
+			}
+		};
+		var instance = new Gladiator(name, age, id, passport, nationality);
+		return instance;
+	}*/
+
+	function getDateTime()
+	{
+		var dateTime = new Date();
+		document.getElementById('time').value = dateTime.toString();
+	}
+
+	function switchTest()
+	{
+		var name = document.getElementById('switch').value;
+		switch(name)
+		{
+			case "James":
+				document.getElementById('switch-output').innerHTML = name + ' is an software programmer';
+				break;
+			case "Lloyd":
+				document.getElementById('switch-output').innerHTML = name + ' is an Engineer';
+				break;
+			default :
+				document.getElementById('switch-output').innerHTML = 'Nothing has been met here';
+		}
+	}
+	function forLoop(){
+		var myText = '';
+		for(i=1; i<=10; i++)
+		{
+			myText +=  i + ' I love James Gudhlanga \n';
+		}
+		document.getElementById('for-output').innerText = myText;
+	}
+	function whileLoop(){
+		var myText = '';
+		i=1;
+		while(i<=10)
+		{
+			myText +=  i + " I love James Gudhlanga Again \n ";
+			i++;
+		}
+		document.getElementById('while-output').innerText = myText;
+	}
+	function doWhileLoop(){
+		var myText = '';
+		var i=1;
+		do
+		{
+			myText +=  i + " I Do love James Gudhlanga \n ";
+			i++;
+		}
+		while(i<=20);
+		document.getElementById('do-output').innerText = myText;
+	}
+	function showObject(){
+		var james = new  Gladiator('James Gudhlanga', 30, '44-088821-F44', "CN474405", "Zimbabwean");
+		var lloyd = new Gladiator('Lloyd Nedinhe', 35, '44-0885678-F44', "AB474U05", "Zimbabwean");
+
+		document.getElementById('obj-output').innerText = james.name;
+	}
+	function showArray(){
+		var males = new Array('James Gudhlanga', "Andrew Gudhlanga", "Lloyd Gudhlanga", "Lymon Gudhlanga");
+		var females = new  Array("Francisca Gudhlanga", "Evelyn Mudzedze");
+		var people = males.concat(females);
+		var myPeople = '';
+		people.sort();
+		for(i=0; i< people.length; i++)
+		{
+			myPeople += people[i] + '\n';
+		}
+		myPeople +=  " <b>Array Join</b> \n";
+		myPeople += people.join();
+		document.getElementById('array-output').innerText = myPeople;
+	}
+	function showPrompt(){
+		var name = prompt('Enter your name', '');
+		document.getElementById('prompt-output').innerText = "Hallo  " + name;
+	}
+	function captureByPrompt(){
+		var details = new Array(4);
+		for(i=0; i<5; i++)
+		{
+			details[i] = prompt('Add Items to the Array', '');
+		}
+		document.getElementById('prompt-capture-output').innerText = "Your Captured Data is =>  " + details.join('*');
+	}
+	function getSquareRoot(){
+		var n = prompt('Enter Your Number ', '');
+		document.getElementById('square-root-output').innerText = "The Square root for   " + n + ' is ' + Math.sqrt(n);
+	}
+
+	function interValFx()
+	{
+		var myText = document.createElement('div')
+		myText.innerHTML = 'James Gudhlanga';
+		document.getElementById('interval-output').appendChild(myText);
+	}
+	function printTime()
+	{
+		var now = new Date();
+		var hours  = now.getHours();
+		var minutes  = now.getMinutes();
+		var seconds  = now.getSeconds();
+		document.getElementById('time-output').innerHTML = hours+":"+minutes+":"+seconds ;
+	}
+
+	//setInterval("interValFx()", 60000);
+	setInterval("printTime()", 1000);
+</script>
+<form method="post">
+	<div class="row">
+		<div class="col-md-6">
+			<h4><u>Javascript Time Object</u></h4>
+			<input type="button" value="Check Time" onclick="getDateTime()">
+			<input type="text" value="" name="time" size="60" id="time"><br/><br/>
+			<h4><u>Javascript <b>Switch && innerHTML</b></u></h4>
+			<input type="text" value="" name="switch" size="40" id="switch" onchange="return switchTest()">
+			<div  id="switch-output"></div>
+			<h4><u>Javascript <b>For</b> Loops</u></h4>
+			<input type="button" value="For Loop" onclick="forLoop()">
+			<div  id="for-output"></div>
+			<h4><u>Javascript <b>While</b> Loops</u></h4>
+			<input type="button" value="While Loop" onclick="whileLoop()">
+			<div  id="while-output"></div>
+			<h4><u>Javascript <b>Do While</b> Loops</u></h4>
+			<input type="button" value=" Do While Loop" onclick="doWhileLoop()">
+			<div  id="do-output"></div>
+			<h4><u>Javascript <b>Objects</b></u></h4>
+			<input type="button" value=" Jav Object" onclick="showObject()">
+			<div  id="obj-output"></div>
+		</div>
+		<div class="col-md-6">
+			<h4><u>Javascript <b>Arrays</b></u></h4>
+			<input type="button" value=" Jav Array" onclick="showArray()">
+			<div  id="array-output"></div>
+			<h4><u>Javascript <b>Prompts</b></u></h4>
+			<input type="button" value=" Jav Prompt" onclick="showPrompt()">
+			<div  id="prompt-output"></div>
+			<br/>
+			<input type="button" value="Capture Items To Array Using Prompt" onclick="captureByPrompt()">
+			<div  id="prompt-capture-output"></div>
+			<h4><u>Javascript <b>Math</b> Object</u></h4>
+			<input type="button" value="Get Square Root" onclick="getSquareRoot()">
+			<div  id="square-root-output"></div>
+			<h4><u>Javascript <b>setInterval</b></u></h4>
+			<div  id="interval-output"></div>
+			<h4><u>Javascript <b>setInterval - Print Real Time</b></u></h4>
+			<div  id="time-output"></div>
+		</div>
+	</div>
+</form>
+<h4><u><b>Ajax</b></u></h4>
+
+<input type="button" value="Go to Ajax" onclick="url('<?php echo $this->baseUrl()?>/example/ajax')">

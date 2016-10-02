@@ -1,0 +1,75 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/17/2016
+ * Time: 8:55 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+echo '<h3 class="jjdev-page-header">'.$this->translate('Zones List').
+	'<span class="jjdev-header-text" data-toggle="modal" data-target="#myModal">'.$this->translate('search').'</span>
+	</h3>';
+echo loadAlertMessage();
+/*Group Data into Page sets */
+$iCount = 1;
+$aZones = $this->aZones;
+$aZonesPaginate = array();
+$iBatch=1;
+foreach($aZones as $aZone)
+{
+	$aZonesPaginate[$iBatch][] = $aZone;
+	if ($iCount % $this->iPerPage == 0)$iBatch++;
+	$iCount++;
+}
+$sNewButton = '<button class="btn btn-default btn-xs btn-block" data-toggle="modal" data-target="#myModal">'.
+	'<div class="pull-left"><span class="glyphicon glyphicon-plus-sign"></span></div>
+			<div class="pull-right">'.$this->translate('Add New Zone').'</div>
+	</button>';
+
+echo '<div class="row">';
+echo generateSideBar($this->aChmsAdminLinks, $sNewButton);
+echo '<div class="col-md-10">';
+if(!empty($aZonesPaginate[$this->iCurrentPage]))
+{
+	echo '<div class="table-responsive">';
+	$iTableSpan = 6;
+	echo '<table class="table table-striped">';
+	echo '<thead><tr>';
+	echo '<th>'.$this->translate('Name').'</th><th>'.$this->translate('Short Name').'</th>
+								<th>'.$this->translate('Zone Leader').'</th>
+								<th>'.$this->translate('Date Started').'</th>
+								<th class="jjdev-align-center">'.$this->translate('Members').'</th>
+								<th></th>';
+	echo '</tr></thead><tbody>';
+	foreach($aZonesPaginate[$this->iCurrentPage] as $aZone)
+	{
+		$sDateStarted = ($aZone['date_started'] > 0) ? date('D d M Y', $aZone['date_started']) : '';
+		$sLeader = (isset($aZone['firstname'])) ? $aZone['firstname'] .' '.$aZone['surname']:'';
+		$iMemberCount = isset($aZone['member_count']) ? $aZone['member_count'] : 0;
+		echo '<tr>';
+		echo '<td>'.$aZone['zone_name'].'</td>';
+		echo '<td>'.$aZone['known_as'].'</td>';
+		echo '<td>'.$sLeader.'</td>';
+		echo '<td>'.$sDateStarted.'</td>';
+		echo '<td class="jjdev-align-center">'.$iMemberCount.'</td>';
+		echo '<td class="jjdev-align-right">
+				<button class="btn btn-default btn-xs jjdev-align-right " onclick="url(\''.$this->baseUrl().'/chms/zone-view/zone_id/'.$aZone['id'].'\')">
+					<span class="glyphicon glyphicon-eye-open"></span>'.' '.$this->translate('View').'
+				</button>
+		</td>';
+		echo '</tr>';
+	}
+	echo '</tbody></table>';
+	echo '</div>';
+}
+else
+	echo '<div class="col-md-12"><div class="alert alert-warning" role="alert">'.$this->translate('No Zones found').'</div></div>';
+
+
+/* Paginate Here */
+echo paginateData($aZones, $this->baseUrl().'/chms/zones', $this->iPerPage, $this->iCurrentPage);
+echo '</div>';
+echo '</div>';
+/* ADD  ZONE */
+$aFormParams = array('data'=>array(), 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-zone');
+echo createModalForm('Add/Edit Zone', 'chms', $aFormParams);

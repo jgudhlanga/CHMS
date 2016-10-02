@@ -1,0 +1,73 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 8/22/2016
+ * Time: 7:40 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+$aAllMembers = $this->aAllMembers;
+$aZone = $this->aZone;
+$sShowAddButton = '';
+$sZoneName = isset($this->aZone['zone_name']) ? '('.$this->aZone['zone_name'].')' : '';
+echo '<form method="post" id="new-members" action="'.$this->baseUrl().'/chms/save-zone-membership">';
+echo '<input type="hidden" name="zone_id" value="'.$this->iZoneID.'">';
+echo '<div class="row">';
+echo loadAlertMessage();
+/* LIST ALL  MEMBERS WHO ARE NOT LINKED TO ZONE YET */
+echo '<div class="col-md-6">';
+if(!empty($aAllMembers))
+{
+	$iSpan = 6;
+	echo '<div class="jjdev-page-header">'.$this->translate('Members without Zones ').'</div>';
+	echo '<div class="table-responsive">';
+	echo '<table class="table table-striped">';
+	echo '<thead>';
+	echo '<tr>
+				<th style="font-size: 10px; text-transform: lowercase;">
+					<input type="checkbox" id="parent" onclick="return checkAll(\'new-members\', \'checkbox\')">
+					<i>(check all)</i>
+				</th>
+				<th>'.$this->translate('Gender').'</th>
+				<th>'.$this->translate('Title').'</th><th>'.$this->translate('First Name').'</th>
+				<th>'.$this->translate('Surname').'</th>
+				<th style="text-align: center;">'.$this->translate('Date Joined').'</th>
+			</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+	foreach($aAllMembers as $aRow)
+	{
+		$sGender = isset($this->aGender[$aRow['gender']]) ? $this->aGender[$aRow['gender']] : '';
+		$sTitle = isset($this->aTitles[$aRow['title']]) ? $this->aTitles[$aRow['title']] : '';
+		echo '<tr>';
+		echo '<td><input type="checkbox" name="members['.$aRow['id'].'][selected]"></td>';
+		echo '<td>'.$sGender.'</td><td>'.$sTitle.'</td>';
+		echo '<td>'.$aRow['firstname'].'</td>
+			<td>'.$aRow['surname'].'</td>
+			<td style="text-align: center;">
+				<input type="text" class="text ui-widget-content ui-corner-all date" name="members['.$aRow['id'].'][date_joined]">
+			</td>';
+		echo '</tr>';
+	}
+	echo '</tbody>';
+	echo '</table>';
+	echo '</div>';
+}
+else
+{
+	echo '<div class="alert alert-warning" role="alert">'.$this->translate('No members without zone found').'</div>';
+	$sShowAddButton ='none';
+}
+echo '</div>';
+echo '<div class="col-md-6 jjdev-margin-top-5">';
+echo '<button type="button" role="button" class="btn btn-default btn-xs"
+					onclick="url(\''.$this->baseUrl().'/chms/zone-view/zone_id/'.$aZone['id'].'\')">
+						'.$this->sLeftBtn.' '.$this->translate('Back').'
+					</button> &nbsp;';
+echo "<button class='btn btn-success btn-xs' type='submit' name='command' style='display: $sShowAddButton'>
+						<span class='glyphicon glyphicon-plus-sign'></span>
+						".$this->translate('Add Selected to '.$sZoneName)."
+					</button>";
+echo '</div>';
+echo '</div>';
+echo '</form>';

@@ -1,0 +1,14 @@
+<?php
+echo '<div class="middleBar" style="width: 90%">';
+//show the set step activities here
+echo $this->sForm;
+echo '</div>';/*end of the middleBar div*/
+
+/*right bar*/
+echo "<div class='rightBar' style='width: 10%'>
+    <button class='btn btn-default btn-sm'
+        onclick=\"url('{$this->baseUrl}/developer/workflow-step/workflow_id/{$this->iWorkflowID}/step_id/{$this->iStepID}')\">
+            {$this->sLeftBtn} "
+   .$this->translate('Back')
+   ."</button>
+</div>";/*end of the rightBar*/

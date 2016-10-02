@@ -1,0 +1,145 @@
+<?php
+$iTabSpan = 13;
+$sBaseUrl =$this->baseUrl;
+$aModules = $this->aModules;
+$aVersions = itemsToArray(GENERAL_PUBLIC, array('version', 'name'),  'is_active=1 and is_version=1', 'name');
+$sUp = $this->sUpBtn;
+$sDown = $this->sDownBtn;
+$sDelete = $this->sDeleteBtn;
+$sAlert= loadAlertMessage();
+echo <<<HTML
+<div class="table-responsive" style="width: 100%;">
+	{$sAlert}
+    <form method='post' id="developer" action="{$this->baseUrl()}/developer/update-installations">
+       <table class="table table-striped">
+           <tr><th colspan="$iTabSpan">{$this->translate('System Modules')}</th></tr>
+           <tr class="caption">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td >&nbsp;</td>
+                <td>{$this->translate('Title')}</td>
+                <td>{$this->translate('Path')}</td><td>{$this->translate('As Stand Alone')}</td>
+                <td style="text-align: center;">{$this->translate('Image')}</td>
+                <td>{$this->translate('Description')}</td>
+                <td >{$this->translate('Order')}</td>
+                <td style="text-align: center; ">{$this->translate('Version')}</td>
+                <td  style="text-align: center;">{$this->translate('Installed')}</td>
+                <td colspan="2" style="text-align: center;">{$this->translate('Action')}</td>
+                </tr>
+HTML;
+if (empty($aModules))
+{
+	echo "<tr><td colspan=\"$iTabSpan\"><div class='alert alert-info'>{$this->translate('There are no modules set')}</div></td></tr>";
+}
+else
+{
+	echo '<tr><td colspan="10" class="jjdev-align-right">'.$this->translate('Select All').'</td>
+	<td class="jjdev-align-center"><input type="radio" name="mod_install" value="1">&nbsp;&nbsp;&nbsp;Yes&nbsp;&nbsp;
+	<input type="radio" name="mod_install" value="0">&nbsp;&nbsp;No&nbsp;&nbsp;</td><td></td></tr>';
+
+	foreach ($aModules as $aRow)
+	{
+		$aModule = $aRow['mod'];
+		$aPages = $aRow['pages'];
+		$aForms = $aRow['forms'];
+		$sTitle = (isset($aModule['title']) && $aModule['title'] != '') ? $aModule['title'] : '';
+		$sName = (isset($aModule['name']) && $aModule['name'] != '') ? $aModule['name'] : '';
+		$sPath = (isset($aModule['path']) && $aModule['path'] != '') ? $aModule['path'] : '';
+		$sIsStandAloneChecked = (isset($aModule['install_as_stand_alone']) && $aModule['install_as_stand_alone'] == 1) ? 'checked' : '';
+		$sNotes = (strlen(strip_tags($aModule['description'])) > 50) ? substr(strip_tags($aModule['description']), 0, 50).'...' : strip_tags($aModule['description']);
+		$sIcon = (isset($aModule['image']) && $aModule['image'] != '') ? $aModule['image'] : '';
+
+		$sDisplayImage = loadImage($this->userTheme, NULL, $sIcon, 25, 25);
+		$sVersion = createSelectOptions($aVersions, $aModule['version'], 'name', 'is_active=1');
+
+		$sButtonActivate = ($aModule['is_active'] == 1) ? "Deactivate" : 'Activate';
+		$sButtonClass = ($aModule['is_active'] == 1) ? $this->sBanBtn : $this->sOkBtn;
+
+		$sInstallationStatus = makeOptions('radio',"mod_install[$aModule[id]]", array(1=>'Yes', 0=>'No'),$aModule['installed'],  Null, Null, 1 );
+
+		$iForms = count($aForms);
+		$sView = '';
+		if (!empty($aPages))
+		{
+			$iCount = count($aPages);
+			$sView = "<button class='btn btn-default btn-xs' type='button' onclick=\"location.href='$sBaseUrl/developer/view/id/{$aModule['id']}'\">
+										{$this->translate('Links')} <span class='badge'>$iCount</span>
+									 </button>";
+		}
+		echo <<<HTML
+      <tr>
+         <td class="center">$sView</td>
+         <td class="center">
+            <button class="btn btn-default btn-xs" type='button'  onclick="location.href='$sBaseUrl/developer/forms/module_id/{$aModule['id']}'">
+            {$this->translate('Forms')} <span class="badge">$iForms</span>
+            </button>
+         </td>
+         <td class="center">
+            <button type="button" class="btn btn-default btn-xs"
+            onclick="location.href='$sBaseUrl/developer/add-new/id/{$aModule['id']}'">
+            	<span class="glyphicon glyphicon-edit"></span>
+               {$this->translate('Edit')}
+            </button>
+         </td>
+         <td>$sTitle</td>
+         <td>$sPath</td>
+         <td class="text-center"><input type="checkbox" value="1" name="install_as_stand_alone" $sIsStandAloneChecked
+         onclick="return confirmStandAlone('{$aModule['id']}')"></td>
+         <td class="text-center">$sDisplayImage</td>
+         <td>$sNotes</td>
+         <td style="text-align: center;">
+            <a href="$sBaseUrl/developer/order-module-positions/direction/down/id/$aModule[id]">$sDown</a>
+            <a href="$sBaseUrl/developer/order-module-positions/direction/up/id/$aModule[id]">$sUp</a>
+         </td>
+         <td style="text-align: center;">
+            <select class="text ui-widget-content ui-corner-all"  onchange="url('{$this->baseUrl()}/developer/update-module-version/module_id/$aModule[id]/version/'+this.value)">
+               <option value="">-- {$this->translate('Select Version')} --</option>$sVersion
+            </select>
+         </td>
+         <td class="jjdev-align-center">
+            $sInstallationStatus
+         </td>
+         <td style="text-align: center;">
+         <button type="button" value="$sButtonActivate" class=" btn btn-default btn-xs" style="width: 100px;"
+            onclick="location.href='$sBaseUrl/developer/activate-module/id/{$aModule['id']}/command/{$sButtonActivate}'">
+         	$sButtonClass
+            $sButtonActivate
+         </button>
+         </td>
+         <td style="text-align: center;">
+            <a onclick="return confirmDelete('$sBaseUrl/developer/delete-module/', $aModule[id])">$sDelete</a>
+         </td>
+      </tr>
+HTML;
+	}
+}
+echo <<<HTML
+      <tr>
+         <td colspan="10">&nbsp;</td>
+         <td style="text-align: center;">
+            <button type="submit" value="Update Installations" name="command" class="btn btn-success btn-xs">
+            <span class="glyphicon glyphicon-plus-sign"></span>
+               {$this->translate('Update Installations')}
+            </button>
+         </td>
+         <td>&nbsp;</td>
+         <td>&nbsp;</td>
+      </tr>
+    </table>
+</form>
+</div>
+HTML;
+
+?>
+<script>
+	function confirmStandAlone(moduleId)
+	{
+		if(confirm('Are you sure you want to install the selected module as the main module. If so smile as we do as you wish'))
+		{
+			url('<?php echo $this->baseUrl()?>/developer/install-as-stand-alone/module_id/'+moduleId);
+			return true;
+		}
+		else
+			return false;
+	}
+</script>

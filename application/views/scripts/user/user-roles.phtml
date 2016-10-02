@@ -1,0 +1,48 @@
+<?php
+$sBaseUrl = $this->baseUrl;
+$iColSpan = 3;
+
+$aRoles = $this->aRoles;
+echo <<<HTML
+<div class="middleBar" style="width: 70%">
+<form method="post">
+	<table class="table  table-striped " style="width: 50%;">
+	<tr><th colspan="$iColSpan">System Roles</th></tr>
+		<tr class="caption">
+			<td style="width:15px;"></td>
+			<td>Role</td>
+			<td width="80"></td>
+		</tr>
+HTML;
+//capture new role here
+if (empty($aRoles))
+{
+	echo "<tr><td colspan=\"$iColSpan\"><div class=' alert alert-warning alert-dismissible'>No roles created yet!</div></td></tr>";
+}
+else
+{
+	$i=1;
+	foreach ($aRoles as $aRow)
+	{
+		echo <<<HTML
+	<tr>
+		<td><span class="badge">$i</span></td>
+		<td>$aRow[name]</td>
+		<td style="text-align: center;">
+			<button type="button" class="btn btn-default btn-xs" onclick="url('$sBaseUrl/user/module-resources/role_id/$aRow[id]')">
+				<span class="glyphicon glyphicon-adjust"></span>
+				Rights
+			</button>
+		</td>
+	</tr>
+HTML;
+		$i++;
+	}
+}
+
+echo <<<HTML
+		<tr><td colspan="$iColSpan">&nbsp;</td></tr>
+	</table>
+</form>
+</div>
+HTML;

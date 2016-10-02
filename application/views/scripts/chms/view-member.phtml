@@ -1,0 +1,95 @@
+<?php
+$aUser = $this->aUser;
+$sUnknown = loadImage('users', NULL, 'default.jpg', 60, 60, 'img-circle', 'text-middle');
+$sUserInsert = (isset($aUser['profile_pic']) && $aUser['profile_pic'] != '') ?
+	loadImage('uploads', 'users', $aUser['profile_pic'], 200, 200, 'img-rounded', 'text-middle') : $sUnknown;
+$sDateOfBirth = (isset($aUser['birth_date']) && $aUser['birth_date'] > 0) ? date("l, d F Y", $aUser['birth_date']) : '';
+$sBaseUrl = $this->baseUrl();
+?>
+<div class="middleBar">
+	<div class="tabber">
+		<div class="tabbertab" title="<?php echo $this->translate('Personal Info') ?>">
+
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Contact Details') ?>">
+
+		</div>
+
+		<div class="tabbertab" title="<?php echo $this->translate('Membership Details') ?>">
+
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('About') ?>">
+			<div>
+				<form method="post">
+					<input type="hidden" name="id" value="<?php echo $this->iUserID ?>">
+					<textarea name="about_me" class="ckeditor"><?php echo $aUser['about_me'] ?></textarea><br/>
+					<button type="submit" name="command" value="<?php echo $this->translate('Save About Me') ?>"
+							class="btn btn-primary btn-sm">
+						<span class="glyphicon glyphicon-floppy-save"></span>
+						<?php echo $this->translate('Save About Me') ?>
+					</button>
+				</form>
+			</div>
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Gallery') ?>">
+			<div class="col-md-12 jjdev-align-left">
+				<form method="post" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="<?php echo $this->iUserID ?>">
+					<button type="submit" name="command" value="<?php echo $this->translate('Upload Photos') ?>"
+							class="btn btn-primary btn-sm">
+						<span class="glyphicon glyphicon-upload"></span>
+						<?php echo $this->translate('Upload Photos') ?>
+					</button>
+				</form>
+			</div>
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Admin') ?>">
+			<div class="row">
+				<div class="col-md-4 jjdev-align-left">
+					<?php if (Control::getAccessLevel() >= 3): ?>
+					<form method="post">
+						<input type="hidden" name="user_id" value="<?php echo $this->iUserID ?>">
+						<div class="jjdev-page-header"><td><?php echo $this->translate('User Role') ?></div>
+						<?php
+						if (!empty($this->aRoles))
+							{
+								foreach($this->aRoles as $aRole)
+								{
+									$sSelected = ($aRole['id'] == $this->iUserRoleId) ? 'checked' : '';
+									echo "<div>
+										<input type='radio' name='role_id' value='$aRole[id]' $sSelected
+										 onclick=\"url('$sBaseUrl/chms/save-member-role/user_id/{$this->iUserID}/role_id/$aRole[id]')\">
+										"." "."$aRole[name]
+									</div>";
+								}
+								$aData = array_column($this->aRoles, 'name', 'id');
+								$sRoleOptions = makeOptions('radio', 'role_id', $aData, $this->iUserRoleId, $sField = '', NUll, 2);
+								//echo'<div>'.$sRoleOptions.'</div>';
+							}
+							else
+								echo "<div class='alert alert-warning'>" . $this->translate('No roles found') . "</div>";
+						?>
+				</div>
+				</form>
+				<?php endif;?>
+			</div>
+			<div class="row">
+				<div class="col-md-4 jjdev-align-left">
+					<button class="btn btn-primary btn-sm" role="button"
+							onclick="url('<?php echo $this->baseUrl ?>/chms/add-new/id/<?php echo $aUser['id'] ?>')">
+						<span class="glyphicon glyphicon-edit"></span>
+						<?php echo $this->translate('Edit Profile') ?>
+					</button>
+					<?php if (Control::getAccessLevel() >= 3): ?>
+					<button class="btn btn-danger btn-sm" role="button"
+							onclick="confirmDelete('<?php echo $this->baseUrl ?>/chms/delete-member/', <?php echo $aUser['id'] ?> )">
+						<span class="glyphicon glyphicon-trash"></span>
+						<?php echo $this->translate('Delete Profile') ?>
+					</button>
+				</div>
+				<?php endif?>
+			</div>
+
+		</div>
+	</div>
+</div>

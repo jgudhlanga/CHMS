@@ -1,0 +1,165 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/23/2016
+ * Time: 11:13 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+$aGroup = $this->aGroup;
+$sDateStarted = ($aGroup['date_started'] > 0) ? date('D d M Y', $aGroup['date_started']) : 'Not Set';
+$sDateCreated = ($aGroup['date_created'] > 0) ? date('D d M Y', $aGroup['date_created']) : 'Not Set';
+$sGroupLeader = isset($aGroup['firstname']) ? $aGroup['firstname'] . ' ' . $aGroup['surname'] : 'Not Set';
+$sActivate = ($aGroup['is_active'] == 1) ? 'Deactivate' : 'Activate';
+$sActivateClass = ($aGroup['is_active'] == 1) ? 'default' : 'default';
+$sActivateIcon = ($aGroup['is_active'] == 1) ? 'ban-circle' : 'check';
+
+echo '<div class="row">';
+	echo'<div class="col-md-8">';
+		echo loadAlertMessage();
+	echo '<div class="table-responsive">';
+		echo '<table class="table table-responsive table-striped">
+			<thead>
+				<tr>
+					<td colspan="2">
+						<div class="jjdev-page-header">'
+							.$this->translate('Group Full View').
+							'<span class="jjdev-toggle-icon">
+									<img title="Collapse" rel="1_exp" src="'.$this->baseUrl().'/img/'.$this->userTheme.'/col.png"
+										onclick="return toggleContent(\'1\')">
+								</span>'.
+						'</div>
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+			<!-- EDIT BAR -->
+				<tr class="content_1 jjdev-no-border">
+					<td colspan="2" style="text-align: right">
+						<button type="button" role="button" class="btn btn-default btn-xs"
+							onclick="url(\''.$this->baseUrl().'/chms/groups\')">
+							'.$this->sLeftBtn.' '.$this->translate('Back to Groups').'
+						</button>
+						<button type="button" role="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal">
+							<span class="glyphicon glyphicon-edit"></span>'.' '.$this->translate('Edit').'
+						</button>
+						<button type="button" role="button" class="btn btn-default btn-xs"
+							onclick="url(\''.$this->baseUrl().'/chms/group-membership/group_id/'.$aGroup['id'].'\')">
+							<span class="glyphicon glyphicon-user"></span>'.' '.$this->translate('Add Members').'
+						</button>
+						<button type="button" role="button" class="btn btn-'.$sActivateClass.' btn-xs"
+							onclick="url(\''.$this->baseUrl().'/chms/activate-group/command/'.$sActivate.'/group_id/'.$aGroup['id'].'\')">
+							<span class="glyphicon glyphicon-'.$sActivateIcon.'"></span>'.' '.$this->translate($sActivate).'
+						</button>
+						<button type="button" role="button" class="btn btn-danger btn-xs"
+							onclick="return confirmDelete(\''.$this->baseUrl().'/chms/delete-group/\', '.$aGroup['id'].')">
+							<span class="glyphicon glyphicon-trash"></span>'.' '.$this->translate('Delete Group').'
+						</button>
+					</td>
+				</tr>
+				<tr class="content_1"><td class="caption" style="width:100px">'.$this->translate('Name').'</td><td>'.$aGroup['group_name'].'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Short Name').'</td><td>'.$aGroup['known_as'].'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Group Leader').'</td><td>'.$sGroupLeader.'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Date Started').'</td><td>'.$sDateStarted.'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Date Created').'</td><td>'.$sDateCreated.'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Group Theme').'</td><td>'.$aGroup['group_theme'].'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Members').'</td><td>'.count($this->aGroupMembers).'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Description').'</td><td>'.$aGroup['description'].'</td></tr>
+				<tr class="content_1"><td colspan="2">&nbsp;</td></tr>
+			</tbody>
+		</table>
+	</div>
+	</div><!--END OF DIV COL-MD-6-->
+	<div class="col-md-6">
+	</div>
+</div> <!--END OF DIV ROW-->';
+
+$aGroupMembers = $this->aGroupMembers;
+echo '<div class="row">';
+echo '<div class="col-md-8">';
+	echo '<div class="jjdev-page-header">'
+			.$this->translate('Group Members').
+			'<span class="jjdev-toggle-icon">
+					<img title="Collapse" rel="2_exp" src="'.$this->baseUrl().'/img/'.$this->userTheme.'/col.png"
+						onclick="return toggleContent(\'2\')">
+				</span>'.
+		'</div>';
+echo '<form method="post" id="group_members" action="'.$this->baseUrl().'/chms/remove-group-membership" >';
+echo '<input type="hidden" name="group_id" value="'.$this->iGroupID.'">';
+if(!empty($aGroupMembers))
+{
+	$iSpan = 7;
+	echo '<div class="table-responsive">';
+	echo '<table class="table table-striped">';
+	echo '<thead>';
+	echo '<tr class="content_2">
+			<th style="font-size: 10px; text-transform: lowercase;">
+				<input type="checkbox" id="parent" onclick="checkAll(\'group_members\', \'checkbox\')">
+				<i>(check all)</i>
+			</th>
+			<th>'.$this->translate('Gender').'</th>
+			<th>'.$this->translate('Title').'</th>
+			<th>'.$this->translate('First Name').'</th>
+			<th>'.$this->translate('Surname').'</th>
+			<th>'.$this->translate('Member Since').'</th>
+			<th></th>
+		</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+	foreach($aGroupMembers as $aMember)
+	{
+		$sGender = isset($this->aGender[$aMember['gender']]) ? $this->aGender[$aMember['gender']] : '';
+		$sTitle = isset($this->aTitles[$aMember['title']]) ? $this->aTitles[$aMember['title']] : '';
+		$sDateJoined = (isset($aMember['group_date_joined']) && $aMember['group_date_joined'] > 0) ?
+			date('d-M-Y', $aMember['group_date_joined']) : '';
+		echo '<tr class="content_2">';
+		echo '<td><input type="checkbox" name="members['.$aMember['member_group_link_id'].']"></td>';
+		echo '<td>'.$sGender.'</td><td>'.$sTitle.'</td>';
+		echo '<td>'.$aMember['firstname'].'</td><td>'.$aMember['surname'].'</td>';
+		echo '<td>'.$sDateJoined.'</td>';
+		echo '<td class="jjdev-align-right">';
+			echo "&nbsp;<button class='btn btn-default btn-xs' type='button'>
+						<span class='glyphicon glyphicon-stats'></span>
+						".$this->translate('Statistics')."
+			</button>";
+		echo '</td>';
+		echo '</tr>';
+	}
+	echo '<tr class="content_2">';
+		echo '<td colspan="'.$iSpan.'" style="text-align: center">';
+			echo "<button class='btn btn-default btn-xs' type='submit' name='command'>
+						<span class='glyphicon glyphicon-minus-sign'></span>
+						".$this->translate('Remove Selected from Group')."
+			</button>";
+			echo "&nbsp;<button class='btn btn-default btn-xs' type='submit' name='command'>
+						<span class='glyphicon glyphicon-envelope'></span>
+						".$this->translate('Contact Selected Members')."
+			</button>";
+			echo "&nbsp;<button class='btn btn-default btn-xs' type='button' onclick=\"url('{$this->baseUrl()}/chms/group-attendance/group_id/{$this->iGroupID}')\">
+						<span class='glyphicon glyphicon-time'></span>
+						".$this->translate('Attendance Register')."
+			</button>";
+			echo "&nbsp;<button class='btn btn-default btn-xs' type='submit' name='command'>
+						<span class='glyphicon glyphicon-stats'></span>
+						".$this->translate('All Group Statistics')."
+			</button>";
+			echo '</td>';
+	echo '</tr>';
+	echo '</tbody>';
+	echo '</table>';
+	echo '</div>';
+}
+else
+{
+	echo '<div class="alert alert-warning" role="alert">'.$this->translate('No Group Members Found!').'</div>';
+}
+echo '</form>';
+echo '</div><!--END OF DIV COL-MD-8-->';
+echo '</div><!--END OF DIV ROW-->';
+/* ADD / EDIT GROUP */
+$aFormParams = array('data'=>$aGroup, 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-group');
+echo createModalForm('Add/Edit Cell Group', 'chms', $aFormParams);
+
+
+

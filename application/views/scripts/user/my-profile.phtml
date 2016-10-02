@@ -1,0 +1,219 @@
+<?php
+$aUser = $this->aUser;
+$sUnknown = loadImage('users', NULL, 'default.jpg', 60, 60, 'img-circle', 'text-middle');
+$sUserInsert = (isset($aUser['profile_pic']) && $aUser['profile_pic'] != '') ?
+	loadImage('uploads', 'users', $aUser['profile_pic'], 200, 200, 'img-rounded', 'text-middle') : $sUnknown;
+$sDateOfBirth = (isset($aUser['birth_date']) && $aUser['birth_date'] > 0) ? date("l, d F Y", $aUser['birth_date']) : '';
+?>
+<div class="middleBar" style="width: 75%;">
+	<div class="tabber">
+		<div class="tabbertab" title="<?php echo $this->translate('Personal Info') ?>">
+			<table class="table " style="width: 100%;">
+				<tr>
+					<td width="10%"><?php echo $sUserInsert?></td>
+					<td style="text-align: left;">
+						<table width="100%">
+							<tr>
+								<td width="15%"><b><?php echo $this->translate('Title') ?></b></td>
+								<td width="5%">&rightarrow;</td>
+								<td><?php echo $aUser['user_title'] ?>
+								</td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('First Name') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['firstname'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('initials') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['initials'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Username') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['username'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Surname') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['surname'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('ID / Passport No') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['id_number'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Gender') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['user_gender'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Date of Birth') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php if (isset($aUser['birth_date']) && $aUser['birth_date'] > 0) echo date('d-F-Y', $aUser['birth_date']); ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Designation') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['designation'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Department') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['department'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Location / City') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['city'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Province') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['province'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Nationality') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['country'] ?></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Contact Details') ?>">
+			<table class="table  table-hover" style="width: 100%">
+				<tr>
+					<td style="text-align: left">
+						<table width="100%">
+							<tr>
+								<td width="10%"><b><?php echo $this->translate('Cell Number') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['cell_number'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Alt Number') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['alt_number'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Work Number') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['work_number'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Fax Number') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['fax_number'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Email Address') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['email_address'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Web Address') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['web_address'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Physical  Address') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['street_address'] ?></td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Postal Address') ?></b></td>
+								<td>&rightarrow;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><b><?php echo $this->translate('Postal Code') ?></b></td>
+								<td>&rightarrow;</td>
+								<td><?php echo $aUser['postal_code'] ?></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('About Me') ?>">
+			<div>
+				<form method="post">
+					<input type="hidden" name="id" value="<?php echo $this->iUserID ?>">
+					<textarea name="about_me" class="ckeditor"><?php echo $aUser['about_me'] ?></textarea><br/>
+					<button type="submit" name="command" value="<?php echo $this->translate('Save About Me') ?>"
+							class="btn btn-primary btn-sm">
+						<span class="glyphicon glyphicon-floppy-save"></span>
+						<?php echo $this->translate('Save About Me') ?>
+					</button>
+				</form>
+			</div>
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Gallary') ?>">
+			<div>
+				<form method="post" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="<?php echo $this->iUserID ?>">
+					<button type="submit" name="command" value="<?php echo $this->translate('Upload Photos') ?>"
+							class="btn btn-primary btn-sm">
+						<span class="glyphicon glyphicon-upload"></span>
+						<?php echo $this->translate('Upload Photos') ?>
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- side bar -->
+<div class="rightBar" style="width: 15%">
+	<span class="bottomBorder">
+		<button class="btn btn-default btn-xs" role="button"
+				onclick="url('<?php echo $this->baseUrl ?>/user/add-user/id/<?php echo $aUser['id'] ?>')">
+			<span class="glyphicon glyphicon-edit"></span>
+			<?php echo $this->translate('Edit Profile') ?>
+		</button>
+	</span>
+	<?php if (Control::getAccessLevel() >= 3): ?>
+		<span class="bottomBorder">
+			<button class="btn btn-default btn-xs" role="button"
+					onclick="confirmDelete('<?php echo $this->baseUrl ?>/user/add-user/', <?php echo $aUser['id'] ?> )">
+				<span class="glyphicon glyphicon-trash"></span>
+				<?php echo $this->translate('Delete Profile') ?>
+			</button>
+		</span>
+		<form method="post">
+			<span class="bottomBorder">
+			<input type="hidden" name="user_id" value="<?php echo $this->iUserID ?>">
+			<table class="table table-hover">
+				<tr class="caption">
+					<td><?php echo $this->translate('User Role') ?></td>
+				</tr>
+				<?php
+				if (!empty($this->aRoles))
+				{
+					$aData = array_column($this->aRoles, 'name', 'id');
+					$sRoleOptions = makeOptions('radio', 'role_id', $aData, $this->iUserRoleId, $sField = '', NUll, 2);
+					echo <<<HTML
+	                    <tr><td style='text-align: left'>$sRoleOptions</td></tr>
+	                    <tr><td style='text-align: center'>
+	                            <button type="submit" value="Update User Role" name="command" class="btn btn-xs btn-default">
+	                            <span class="glyphicon glyphicon-floppy-save"></span>
+	                            Update User Role
+	                            </button>
+	                         </td>
+	                    </tr>
+HTML;
+				}
+				else
+				{
+					echo "<tr><td>" . $this->translate('No roles found') . "</td></tr>";
+				}
+				?>
+			</table>
+			</span>
+		</form>
+	<?php endif; ?>
+</div>

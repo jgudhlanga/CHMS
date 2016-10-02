@@ -1,0 +1,63 @@
+<?php
+echo "<div class='middleBar' style='width: 98%'>";
+//list the workflow below
+$sBaseUrl = $this->baseUrl;
+$sDelete = $this->sDeleteBtn;
+$iTableSpan = 7;
+echo "<form method='post'>
+    <table class='table table-striped' style='width: 100%;'>
+        <tr><th colspan='$iTableSpan'>".$this->translate('System Workflow')."</th></tr>
+        <tr class='caption'>
+            <td style='width: 50px'></td><td style='width: 50px'></td>
+            <td style='text-align: left'>".$this->translate('Workflow Name')."</td>
+            <td style='text-align: left'>".$this->translate('Module Name')."</td>
+            <td style='text-align: left'>".$this->translate('Work Notes')."</td>
+            <td style='width: 50px'></td>
+            <td style='width: 50px'></td>
+        </tr>";
+if (!empty($this->aWorkflow))
+{
+   foreach ($this->aWorkflow as $aWorkflow)
+   {
+      $sButtonActivate = ($aWorkflow['is_active'] == 1) ? "Deactivate" : 'Activate';
+      $sButtonClass = ($aWorkflow['is_active'] == 1) ? "warning" : 'success';
+      $sIconClass = ($aWorkflow['is_active'] == 1) ? "unchecked" : 'check';
+	  $sNotes = (strlen(strip_tags($aWorkflow['workflow_notes'])) > 80) ? substr(strip_tags($aWorkflow['workflow_notes']), 0, 80).'...' : strip_tags($aWorkflow['workflow_notes']);
+
+      echo "<tr>
+                <td style='text-align: center'>
+                    <button type='button' role='button' class='btn btn-default btn-xs' onclick=\"url('$sBaseUrl/developer/workflow/workflow_id/$aWorkflow[id]')\">
+                    <span class='glyphicon glyphicon-edit'></span>
+                     ".$this->translate('Edit')."
+                    </button>
+                </td>
+                <td style='text-align: center'>
+                    <button type='button' role='button' class='btn btn-default btn-xs' onclick=\"url('$sBaseUrl/developer/workflow-step/workflow_id/$aWorkflow[id]')\">
+                    <span class='glyphicon glyphicon-edit'></span>
+                     ".$this->translate('Steps')."
+                    </button>
+                </td>
+                <td style='text-align: left'>$aWorkflow[workflow_name]</td>
+                <td style='text-align: left'>$aWorkflow[module_title]</td>
+                <td style='text-align: left'>$sNotes</td>
+                <td style='text-align: center'>
+                    <button type='button' role='button' class='btn btn-$sButtonClass btn-xs' style='width:100px' onclick=\"url('$sBaseUrl/developer/activate-workflow/workflow_id/$aWorkflow[id]/command/$sButtonActivate')\">
+                    <span class='glyphicon glyphicon-$sIconClass'></span>
+                     ".$this->translate($sButtonActivate)."
+                    </button>
+                </td>
+                <td style='text-align: center'>
+                  <a onclick=\"return confirmDelete('$sBaseUrl/developer/delete-workflow/workflow_id/ $aWorkflow[id]/', $aWorkflow[id])\">$sDelete</a>
+                </td>
+            </tr>";
+   }
+}
+else
+{
+   echo "<tr><td colspan='$iTableSpan' style='text-align: center;'>".$this->translate('No system workflow found')."</td></tr>";
+}
+echo "</table></form><br/><br/>";
+
+//create or edit a workflow here
+echo $this->sForm;
+echo '</div>';

@@ -1,0 +1,30 @@
+<div class="middleBar" style="width: 80%">
+	<table class="table table-responsive " style="width:80%">
+		<tr><th colspan="3"><?php echo $this->translate('Library')?></th></tr>
+		<?php if (empty($this->aCoreFolders)) :?>
+			<?php echo '<tr>
+						<td colspan="3">
+							<div class="alert alert-warning" role="alert"><i>'.$this->translate('No core folders set ').'</i></div>
+						</td>
+					</tr>'?>
+		<?php else:?>
+			<?php
+			$i = 1;
+			$sFolderIcon = Docs::getIcon('folder');
+			echo '<tr>';
+			foreach($this->aCoreFolders as $aFolder)
+			{
+				$aSummary = Docs::getSummary($aFolder['id'], 0);
+				echo '<td style="width: 30%;">
+							<a class="doc-link" href="'.$this->baseUrl().'/docs/view/folder_id/'.$aFolder['id'].'">'
+									.$aFolder['title'].'<br/>'.$sFolderIcon
+							.'</a><br/>
+							<span class="doc-summary">'.$aSummary['folders'].' '.$this->translate('Folders').' | '.$aSummary['files'].' '.$this->translate('Files').'</span>
+					  </td>';
+				if ($i % 3 == 0) echo '</tr>';
+				$i++;
+			}
+			?>
+		<?php endif?>
+	</table>
+</div>

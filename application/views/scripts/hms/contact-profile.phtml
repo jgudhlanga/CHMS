@@ -1,0 +1,33 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 6/16/2016
+ * Time: 6:38 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+$aContact= $this->aContact;
+$sDateOfBirth = (isset($aContact['birth_date']) && $aContact['birth_date'] > 0) ? date("l, d F Y", $aContact['birth_date']) : '';
+?>
+<div class="middleBar" style="width: 75%;">
+	<div class="tabber">
+		<div class="tabbertab" title="<?php echo $this->translate('Personal Info') ?>">
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Hostel Details') ?>">
+
+		</div>
+		<div class="tabbertab" title="<?php echo $this->translate('Payment Details') ?>">
+
+		</div>
+	</div>
+</div>
+<!-- side bar -->
+<div class="rightBar" style="width: 15%">
+	<span class="bottomBorder">
+		<button class="btn btn-default btn-xs" role="button"
+				onclick="url('<?php echo $this->baseUrl ?>/hms/add-edit-guest/id/<?php echo $aContact['id'] ?>')">
+			<span class="glyphicon glyphicon-edit"></span>
+			<?php echo $this->translate('Edit Details') ?>
+		</button>
+	</span>
+</div>

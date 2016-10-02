@@ -1,0 +1,73 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/17/2016
+ * Time: 8:55 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+echo '<h3 class="jjdev-page-header">'.$this->translate('Departments List').
+	'<span class="jjdev-header-text" data-toggle="modal" data-target="#myModal">'.$this->translate('search').'</span>
+	</h3>';
+echo loadAlertMessage();
+/*Group Data into Page sets */
+$iCount = 1;
+$aDepartments = $this->aDepartments;
+$aDepartmentsPaginate = array();
+$iBatch=1;
+foreach($aDepartments as $aDepartment)
+{
+	$aDepartmentsPaginate[$iBatch][] = $aDepartment;
+	if ($iCount % $this->iPerPage == 0)$iBatch++;
+	$iCount++;
+}
+
+echo '<div class="row">';
+echo generateSideBar($this->aChmsAdminLinks, $this->translate('Departments Admin'));
+echo '<div class="col-md-10">';
+if(!empty($aDepartmentsPaginate[$this->iCurrentPage]))
+{
+	echo '<div class="table-responsive">';
+	$iTableSpan = 6;
+	echo '<table class="table table-striped">';
+	echo '<thead><tr>';
+	echo '<th>'.$this->translate('Name').'</th><th>'.$this->translate('Short Name').'</th>
+								<th>'.$this->translate('HOD').'</th>
+								<th>'.$this->translate('Date Started').'</th>
+								<th class="jjdev-align-center">'.$this->translate('Employees').'</th>
+								<th></th>';
+	echo '</tr></thead><tbody>';
+	foreach($aDepartmentsPaginate[$this->iCurrentPage] as $aDepartment)
+	{
+		$sDateStarted = ($aDepartment['date_started'] > 0) ? date('D d M Y', $aDepartment['date_started']) : '';
+		$sLeader = (isset($aDepartment['firstname'])) ? $aDepartment['firstname'] .' '.$aDepartment['surname']:'';
+		echo '<tr>';
+		echo '<td>'.$aDepartment['department'].'</td>';
+		echo '<td>'.$aDepartment['short_name'].'</td>';
+		echo '<td>'.$sLeader.'</td>';
+		echo '<td>'.$sDateStarted.'</td>';
+		echo '<td class="jjdev-align-center">0</td>';
+		echo '<td>
+				<button class="btn btn-default btn-xs jjdev-align-right " onclick="url(\''.$this->baseUrl().'/chms/department-view/department_id/'.$aDepartment['id'].'\')">
+					<span class="glyphicon glyphicon-edit"></span>'.' '.$this->translate('View').'
+				</button>
+		</td>';
+		echo '</tr>';
+	}
+	echo '</tbody></table>';
+	echo '</div>';
+}
+else
+	echo '<div class="col-md-12"><div class="alert alert-warning" role="alert">'.$this->translate('No departments found').'</div></div>';
+
+echo '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal">
+			<span class="glyphicon glyphicon-plus-sign"></span>'.$this->translate('Add Department').
+	'</button>';
+
+/* Paginate Here */
+echo paginateData($aDepartments, $this->baseUrl().'/chms/departments', $this->iPerPage, $this->iCurrentPage);
+echo '</div>';
+echo '</div>';
+/* ADD / EDIT DEPARTMENT */
+$aFormParams = array('data'=>array(), 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-department');
+echo createModalForm('Add/Edit Department', 'departments', $aFormParams);

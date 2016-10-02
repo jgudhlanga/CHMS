@@ -1,0 +1,14 @@
+</div><!-- End main content here -->
+</div><!-- End main content wrapper here -->
+
+<?php if (isset($user['id']) && $user['id'] > 0): ?>
+	<?php include_once("footer-bar.phtml");?>
+<?php endif ?>
+
+<?php
+$aSettings = Bootstrap::getSystemOptions();
+/* ADD / EDIT USER SETTINGS */
+$aFormParams = array('data'=>$aSettings, 'action-button'=>'Save', 'modal-id'=>'mySettings',
+					 'target'=>$this->baseUrl().'admin/save-system-options');
+echo createModalForm('System Options', 'admin', $aFormParams);
+

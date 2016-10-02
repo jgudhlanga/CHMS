@@ -1,0 +1,16 @@
+<?php
+
+$sBaseUrl = $this->baseUrl;
+
+$sMessage = (isset($this->sMessage) && $this->sMessage != '') ?
+	"<div class='alert alert-{$this->sClass}' id='divMessage' role='alert' style='width: 50%; margin: 0 auto;'>{$this->translate($this->sMessage)}</div>"  : '';
+
+$sForm = $this->sForm;
+echo <<<HTML
+<div class="middleBar" style="width: 100%;">
+	$sMessage
+	$sForm
+</div>
+HTML;
+
+showMessage('divMessage');

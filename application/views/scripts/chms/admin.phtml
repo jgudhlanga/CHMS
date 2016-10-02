@@ -1,0 +1,14 @@
+<?php
+
+$sBaseUrl = $this->baseUrl();
+echo '<h3 class="jjdev-page-header">'.$this->translate('CHMS Admin Panel').'</h3>';
+
+echo '<div class="row">';
+echo generateSideBar($this->aChmsAdminLinks);
+echo '<div class="col-md-10">
+					<p>This template has a responsive menu toggling system. The menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will appear/disappear. On small screens, the page content will be pushed off canvas.
+					</p>
+					<p>JJDEV is there for support. You Know it!<code>www.jjdev.com, james@jjdev.com, 027788104809</code>.</p>
+	</div>';
+echo '</div>';
+

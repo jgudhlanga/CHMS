@@ -1,0 +1,82 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 6/11/2016
+ * Time: 8:45 PM
+ * Copyright (c) JJDVEV
+ * @version 3.0 (excellence)
+ */
+#============================================= LIST HOSTELS HERE =======================================================
+$iTableSpan = 11;
+echo '<div class="middleBar" style="width: 90%">';
+echo '<table class="table table-striped">';
+echo '
+	<tr>
+		<th colspan="'.$iTableSpan.'">
+			<span class="jjdev-toggle-title">'.$this->translate('Hostel List').'</span>
+			<span class="jjdev-toggle-icon">
+				<img title="Collapse" rel="1_exp" src="'.$this->baseUrl().'/img/'.$this->userTheme.'/col.png" onclick="return toggleContent(1)">
+			</span>
+		</th>
+	</tr>';
+if(!empty($this->aHostels))
+{
+	echo '<tr class="caption content_1">';
+		echo '<td style="width: 20px;"></td><td style="width: 80px;"></td>';
+		echo '<td>'.$this->translate('Hostel Name').'</td><td>'.$this->translate('Short Name').'</td>';
+		echo '<td>'.$this->translate('Warden').'</td><td>'.$this->translate('Males/Females').'</td><td>'.$this->translate('Total Floors').'</td>';
+		echo '<td style="width: 80px;"></td>';
+	echo '<td style="width: 80px;"></td><td style="width: 20px;"></td>';
+	echo '</tr>';
+	$iCount = 0;
+	foreach($this->aHostels as $aHostel)
+	{
+		$iCount++;
+		$sHostelName = isset($aHostel['hostel_name']) ? $aHostel['hostel_name'] : '';
+		$sShortName = isset($aHostel['short_name']) ? $aHostel['short_name'] : '';
+		$sActivate = ($aHostel['is_active'] == 1)  ? 'Deactivate' : 'Activate';
+		$sActivateIcon = ($aHostel['is_active'] == 1)  ? 'ban-circle' : 'check';
+		$sManager = isset($aHostel['warden_firstname'])  ? $aHostel['warden_firstname'].' '.$aHostel['warden_surname'] : '';
+		$sMaleFemale =isset($this->aMaleFemale[strtolower($aHostel['males_females'])]) ? $this->aMaleFemale[strtolower($aHostel['males_females'])] : '';
+		echo '<tr class="content_1">';
+			echo '<td><span class="badge">'.$iCount.'</span></td>';
+			echo '<td style="text-align: center">
+					<button class="btn btn-default btn-xs" onclick="url(\''.$this->baseUrl().'/hms/hostel-list/hostel_id/'.$aHostel['id'].'\')">
+						<span class="glyphicon glyphicon-edit"></span>
+						'.$this->translate('Edit').'
+					</button>
+			</td>';
+			echo '<td>'.$sHostelName.'</td>';
+			echo '<td>'.$sShortName.'</td>';
+			echo '<td>'.$sManager.'</td>';
+			echo '<td>'.$sMaleFemale.'</td>';
+			echo '<td>'.$aHostel['total_floors'].'</td>';
+			echo '<td style="text-align: center">
+						<button class="btn btn-default btn-xs" onclick="url(\''.$this->baseUrl().'/hms/hostel-admin/hostel_id/'.$aHostel['id'].'\')">
+							<span class="glyphicon glyphicon-cog"></span>
+							'.$this->translate('Administration').'
+						</button>
+			</td>';
+			echo '<td style="text-align: center">
+					<button class="btn btn-default btn-xs"
+						onclick="url(\''.$this->baseUrl().'/hms/activate-hostel/hostel_id/'.$aHostel['id'].'/command/'.$sActivate.'\')">
+						<span class="glyphicon glyphicon-'.$sActivateIcon.'"></span>
+						'.$this->translate($sActivate).'
+					</button>
+			</td>';
+		echo "<td style=\"text-align: right\"><a alt='Delete' title='Delete'
+					onclick=\"return confirmDelete('{$this->baseUrl()}/hms/delete-hostel/', $aHostel[id])\">{$this->sDeleteBtn}</a>
+				</td>";
+echo '</tr>';
+	}
+}
+else
+{
+	echo '<tr class="content_1"><td colspan="'.$iTableSpan.'"><div class="alert alert-warning" role="alert">'.$this->translate('Nothing Found').'</div></td></tr>';
+}
+echo '</table><br/><br/>';
+#============================================= ADD/EDIT HOSTEL =========================================================
+
+echo $this->sForm;
+
+echo '</div>';

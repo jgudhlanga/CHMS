@@ -1,0 +1,36 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 8/14/2016
+ * Time: 2:05 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+?>
+<script type="text/javascript">
+	function ajaxObj(meth, url)
+	{
+		var x =  new XMLHttpRequest();
+		x.open(meth, url);
+		x.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		return x;
+	}
+
+	function ajaxReturn(x)
+	{
+		if(x.readyState == 4 && x.status == 200)
+		{
+			return true;
+		}
+	}
+
+	function ajaxTest()
+	{
+		alert('James Gudhlanga');
+	}
+
+</script>
+
+<button class="btn btn-primary btn-sm" onclick="return ajaxTest();">
+	<?php echo $this->translate('Ajax Test')?>
+</button>

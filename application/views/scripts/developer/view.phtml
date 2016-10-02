@@ -1,0 +1,82 @@
+<?php
+$iTabSpan = 11;
+$sBaseUrl = $this->baseUrl;
+$aModules = $this->aModules;
+$aMod = $this->aModule;
+$sUp = $this->sUpBtn;
+$sDown = $this->sDownBtn;
+$sDelete = $this->sDeleteBtn;
+echo <<<HTML
+<div class="middleBar" style="width: 98%;">
+    <form method='post'>
+    <table class="table table-striped" >
+    	<tr><th colspan="$iTabSpan">{$aMod['title']} {$this->translate('Views')}</th></tr>
+        <tr class="caption">
+            <td width="80">&nbsp;</td>
+             <td>{$this->translate('Title')}</td><td>{$this->translate('Name')}</td>
+             <td>{$this->translate('Path')}</td><td>{$this->translate('Link')}</td>
+             <td style="text-align: center">{$this->translate('Image')}</td>
+             <td style="text-align: center">{$this->translate('Glyphicon')}</td>
+             <td>{$this->translate('Description')}</td>
+             <td width="50px" style="text-align: center">{$this->translate('Order')}</td>
+             <td width="50px" style="text-align: center">{$this->translate('Action')}</td>
+        </tr>
+HTML;
+if (empty($aModules))
+{
+	echo "<tr><td colspan=\"$iTabSpan\"><div class='alert alert-info' role='alert'>{$this->translate('There are no  modules set')} </div></td></tr>";
+}
+else
+{
+	foreach ($aModules as $aModule)
+	{
+		if ($aModule['module_id'] == 0) continue;
+		$sTitle = (isset($aModule['title']) && $aModule['title'] != '') ? $aModule['title'] : '';
+		$sName = (isset($aModule['name']) && $aModule['name'] != '') ? $aModule['name'] : '';
+		$sPath = (isset($aModule['path']) && $aModule['path'] != '') ? $aModule['path'] : '';
+		$sLink = (isset($aModule['link']) && $aModule['link'] != '') ? $aModule['link'] : '';
+		$sNotes = (isset($aModule['description']) && $aModule['description'] != '') ? nl2br($aModule['description'])  : '';
+		$sIcon = (isset($aModule['image']) && $aModule['image'] != '') ? $aModule['image'] : '';
+		$sDisplayImage = loadImage($this->userTheme, NULL, $sIcon, 16, 16);
+		$sGlyphiconColor = (isset($aModule['class_color']) && $aModule['class_color'] != '') ? "style='color: $aModule[class_color]'":"";
+		$sGlyphicon = (isset($aModule['class_name']) && $aModule['class_name'] != '') ? '<span class="glyphicon glyphicon-'.strtolower($aModule['class_name']).'"'.$sGlyphiconColor.'></span>':'';
+		echo <<<HTML
+		<tr>
+			<td style="text-align: center">
+				<button type="button"  class="btn btn-default btn-xs" onclick="location.href='$sBaseUrl/developer/add-new/id/{$aModule['id']}'">
+					<span class="glyphicon glyphicon-edit"></span>
+					{$this->translate('Edit')}
+				</button>
+			</td>
+			<td>$sTitle</td>
+			<td>$sName</td>
+			<td>$sPath</td>
+			<td>$sLink</td>
+			<td width="45px" style="text-align: center">$sDisplayImage</td>
+			<td width="45px" style="text-align: center">$sGlyphicon</td>
+			<td width="300px">$sNotes</td>
+			<td style="text-align: center">
+				<a href="$sBaseUrl/developer/order-module-positions/direction/down/id/$aModule[id]/module_id/$aModule[module_id]/from/view">$sDown</a>
+				<a href="$sBaseUrl/developer/order-module-positions/direction/up/id/$aModule[id]/module_id/$aModule[module_id]/from/view">$sUp</a>
+			</td>
+			<td style="text-align: center">
+				<a onclick="return confirmDelete('$sBaseUrl/developer/delete-module/from/view/module_id/$aModule[module_id]/', $aModule[id])">$sDelete</a>
+			</td>
+		</tr>
+HTML;
+	}
+}
+echo <<<HTML
+        <tr><td colspan="$iTabSpan">&nbsp;</td></tr>
+        <tr>
+				<td colspan="$iTabSpan" style="text-align: center;">
+					<button type="button" class="btn btn-default btn-sm" onclick="location.href='$sBaseUrl/developer/index'">
+                        {$this->sLeftBtn}
+						{$this->translate('Back')}
+					</button>
+				</td>
+        	</tr>
+    </table>
+  </form>
+</div>
+HTML;

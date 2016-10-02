@@ -1,0 +1,188 @@
+<?php
+$sBaseUrl = $this->baseUrl;
+$iTabSpan = 9;
+$aForms = $this->aForms;
+$aModule = $this->aModule;
+$sDelete = $this->sDeleteBtn;
+
+$sFromSplitOptions = '';
+$aEdit = array();
+if (isset($this->aForm) && is_array($this->aForm) && !empty($this->aForm))
+   $aEdit = $this->aForm;
+else if (isset($this->aFields) && is_array($this->aFields) && !empty($this->aFields))
+   $aEdit = $this->aFields;
+$sError ='';
+if (isset($this->sError) && $this->sError != '')
+	$sError = "<div class='alert alert-warning' id='divMessage' role='alert' style='width: 50%; margin: 0 auto;'>".$this->translate($this->sError)."</div>";
+
+echo <<<HTML
+<div class="middleBar" style="width: 100%;">
+		$sError
+	<table class="table table-striped" style="width:100%">
+		<tr>
+			<th colspan="$iTabSpan"><span class="jjdev-toggle-title">
+				{$this->translate('Forms for Module:')} {$aModule['title']}</span>
+				<span class="jjdev-toggle-icon"><img id="toggle" rel="1_exp" src="$sBaseUrl/img/{$this->userTheme}/col.png" onclick="return toggleContent(1)"></span>
+			</th>
+		</tr>
+		<tr class="caption content_1">
+			<td style="text-align: center;" width="50"></td>
+			<td style="text-align: center;" width="50"></td>
+			<td>{$this->translate('Name')}</td>
+			<td>{$this->translate('Page')}</td>
+			<td>{$this->translate('Split Columns')}</td>
+			<td>{$this->translate('Database Table')}</td>
+			<td>{$this->translate('Description')}</td>
+			<td style="text-align: center;" width="50"></td>
+			<td style="text-align: center;"width="50">{$this->translate('Action')}</td>
+		</tr>
+HTML;
+ if (empty($aForms))
+ {
+	 echo "<tr class='content_1'><td colspan=\"$iTabSpan\"><div class='alert alert-warning' role='alert'>{$this->translate('No forms for this module:')} {$this->sModule}</div></td></tr>";
+ }
+ else
+ {
+	foreach($aForms as $aRow)
+	{
+      $aForm = $aRow['form'];
+      $aFields = $aRow['fields'];
+      $iFields = count($aFields);
+		$sName = (isset($aForm['name']) && $aForm['name'] != '') ? $aForm['name'] : '';
+		$sPage = (isset($aForm['page']) && $aForm['page'] != '') ? $aForm['page'] : '';
+		$sSplitOption = (isset($aForm['split_form_option']) && $aForm['split_form_option'] != '') ? $aForm['split_form_option'] : '';
+		$sTable= (isset($aForm['db_table']) && $aForm['db_table'] != '') ? $aForm['db_table'] : '';
+		$sDescription= (strlen(strip_tags($aForm['description']) > 80)) ? substr(strip_tags($aForm['description']), 0, 80).'...' : strip_tags($aForm['description']);
+
+		echo <<<HTML
+		<tr class='content_1'>
+			<td class="center">
+				<button  type="button"  class="btn btn-default btn-xs"
+					onclick="location.href='$sBaseUrl/developer/fields/form_id/$aForm[id]/module_id/{$this->iModuleId}';">
+					{$this->translate('Fields')} <span class="badge">$iFields</span>
+				</button>
+			</td>
+			<td class="center">
+				<button type="button"  class="btn btn-default btn-xs"
+					onclick="location.href='$sBaseUrl/developer/forms/id/$aForm[id]/module_id/$aForm[module_id]';">
+					<span class="glyphicon glyphicon-edit"></span>
+					{$this->translate('Edit')}
+				</button>
+			</td>
+			<td>$sName</td>
+			<td>$sPage</td>
+			<td>$sSplitOption</td>
+			<td>$sTable</td>
+			<td>$sDescription</td>
+			<td class="center">
+				<button type="button"  class="btn btn-default btn-xs"
+					onclick="location.href='$sBaseUrl/developer/form-export/id/$aForm[id]/module_id/$aForm[module_id]';">
+					<span class="glyphicon glyphicon-export"></span>
+					{$this->translate('Export')}
+				</button>
+			</td>
+			<td style="text-align: center;">
+				<a onclick="return confirmDelete('$sBaseUrl/developer/delete-form/module_id/$aForm[module_id]/',$aForm[id])">$sDelete</a>
+			</td>
+		</tr>
+HTML;
+	}
+ }
+	echo <<<HTML
+		<tr><td colspan="$iTabSpan">&nbsp;</td></tr>
+		<tr>
+			<td colspan="$iTabSpan" style="text-align: center;">
+					<button type="button"  class="btn btn-sm btn-default" onclick='location.href="$sBaseUrl/developer/index"'>
+                        {$this->sLeftBtn}
+						Back
+					</button>
+			</td>
+		</tr>
+	</table>
+</div>
+HTML;
+
+$iColspan = 2;
+$sFormName = (isset($aEdit['name']) && $aEdit['name'] != '') ? $aEdit['name'] : '';
+$sFormAction = (isset($aEdit['page']) && $aEdit['page'] != '') ? $aEdit['page'] : '';
+$sFormID = (isset($aEdit['form_id']) && $aEdit['form_id'] != '') ? $aEdit['form_id'] : '';
+$sDescription= (isset($aEdit['description']) && $aEdit['description'] != '') ? $aEdit['description'] : '';
+$sButton = (isset($aEdit['id']) && $aEdit['id'] > 0) ? 'Update' : 'Save';
+$sTitle = (isset($aEdit['id']) && $aForm['id'] > 0) ? 'Edit' : 'Add';
+$iSplitOption = isset($aEdit['split_form_option']) ? $aEdit['split_form_option'] : '';
+if (!empty($this->aFormSplitOptions))
+{
+	$aOptions = array_column($this->aFormSplitOptions, 'name', 'short_name');
+	$sFromSplitOptions = createSelectOptions($aOptions, $iSplitOption);
+}
+$sRequired = required();
+echo '
+<div class="middleBar" style="width: 60%">
+<form method="post">
+	<input type="hidden" name="module_id" value="'.$this->iModuleId.'">
+    <table class="table table-striped" style="width:80%">
+		<tr><th colspan="4">'.$this->translate('Add/Edit Form').'</th></tr>
+		<tr>
+			<td class="caption">'.$this->translate('Form Title').$sRequired.'</td>
+			<td>
+				<input type="text" value="'.$sFormName.'" name="name" id="name" class="form-control input-sm" required placeholder="'.$this->translate('Form Title').'">
+			</td>
+			<td class="caption">'.$this->translate('Action').'</td>
+			<td><input type="text" value="'.$sFormAction.'" name="page" id="page" class="form-control input-sm"  placeholder="'.$this->translate('Form Action').'"></td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Form ID').'</td>
+			<td>
+				<input type="text" value="'.$sFormID.'" name="form_id" id="form_id" class="form-control input-sm"  placeholder="'.$this->translate('Form ID').'">
+			</td>
+			<td class="caption">'.$this->translate('Split Form').'</td>
+			<td>
+				<select name="split_form_option" id="split_form_option" class="form-control input-sm" style="width: 98%">
+					 <option value="">-- '.$this->translate('Select').' --</option>'.$sFromSplitOptions.'
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Description').'</td>
+			<td colspan="3">
+				<textarea name="description" id="description" class="form-control input-sm" placeholder="'.$this->translate('Description...').'">'.$sDescription.'</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="4" style="text-align: center;">
+				<button type="submit" value="'.$this->translate('Save').'" class="btn btn-primary btn-sm" name="command">
+						<span class="glyphicon glyphicon-floppy-save"></span>
+						'.$this->translate('Save').'
+				</button>
+			</td>
+		</tr>
+	</table>
+</form>';
+echo '</div>';
+echo '<div class="rightBar" style="width: 30%;">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h5 class="panel-title">'.$this->translate('Upload Forms').'</h5>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal" method="post" enctype="multipart/form-data" action="'.$this->baseUrl().'/developer/form-import">
+				<input type="hidden" name="module_id" value="'.$this->iModuleId.'">
+					<div class="col-md-10">
+						<div class="form-group">
+							<label for="form-imports" class="control-label col-xs-4">Files</label>
+							<div class="col-xs-8"><input type="file" multiple id="form-imports" name="form-imports[]"></div>
+						</div>
+					</div>
+					<div class="col-md-10" style="text-align: center;">
+						<button type="submit" value="Import" name="command"
+							class="btn btn-primary btn-sm" style="min-width: 100px; font-weight: bold;">
+								<span class="glyphicon glyphicon-import"></span>
+								Import
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>';
+showMessage('divMessage');

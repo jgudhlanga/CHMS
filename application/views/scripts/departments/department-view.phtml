@@ -1,0 +1,55 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/23/2016
+ * Time: 11:32 PM
+ * Copyright (c) Wemasoft
+ * @version 3.0 (excellence)
+ */
+$aDepartment = $this->aDepartment;
+$sDateStarted = ($aDepartment['date_started'] > 0) ? date('D d M Y', $aDepartment['date_started']) : 'Not Set';
+$sDateCreated = ($aDepartment['date_created'] > 0) ? date('D d M Y', $aDepartment['date_created']) : 'Not Set';
+$sHod = isset($aDepartment['firstname']) ? $aDepartment['firstname'] . ' ' . $aDepartment['surname'] : 'Not Set';
+$sActivate = ($aDepartment['is_active'] == 1) ? 'Deactivate' : 'Activate';
+$sActivateClass = ($aDepartment['is_active'] == 1) ? 'warning' : 'success';
+$sActivateIcon = ($aDepartment['is_active'] == 1) ? 'ban-circle' : 'check';
+
+echo '<div class="row">';
+	echo loadAlertMessage();
+	echo '<div class="col-md-6">
+		<table class="table table-responsive table-striped">
+			<thead>
+				<tr><td colspan="2"><div class="jjdev-page-header">'.$this->translate('Department Full View').'</div></td></tr>
+			</thead>
+			<tbody>
+				<tr><td class="caption">'.$this->translate('Name').'</td><td>'.$aDepartment['department'].'</td></tr>
+				<tr><td class="caption">'.$this->translate('Short Name').'</td><td>'.$aDepartment['short_name'].'</td></tr>
+				<tr><td class="caption">'.$this->translate('HOD').'</td><td>'.$sHod.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Date Started').'</td><td>'.$sDateStarted.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Date Created').'</td><td>'.$sDateCreated.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Employees').'</td><td>0</td></tr>
+				<tr><td class="caption">'.$this->translate('Projects').'</td><td>0</td></tr>
+				<tr><td class="caption">'.$this->translate('Description').'</td><td>'.$aDepartment['description'].'</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-6">
+		<button type="button" role="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+			<span class="glyphicon glyphicon-edit"></span>
+			'.$this->translate('Edit').'
+		</button>
+		<button type="button" role="button" class="btn btn-'.$sActivateClass.' btn-sm"
+			onclick="url(\''.$this->baseUrl().'/chms/activate-department/command/'.$sActivate.'/department_id/'.$aDepartment['id'].'\')">
+			<span class="glyphicon glyphicon-'.$sActivateIcon.'"></span>
+			'.$this->translate($sActivate).'
+		</button>
+		<button type="button" role="button" class="btn btn-danger btn-sm"
+		onclick="return confirmDelete(\''.$this->baseUrl().'/chms/delete-department/\', '.$aDepartment['id'].')">
+			<span class="glyphicon glyphicon-trash"></span>
+			'.$this->translate('Delete').'
+		</button>
+	</div>
+</div>';
+
+$aFormParams = array('data'=>$aDepartment, 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-department');
+echo createModalForm('Add/Edit Department', 'departments', $aFormParams);

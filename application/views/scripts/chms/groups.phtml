@@ -1,0 +1,76 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/17/2016
+ * Time: 8:55 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+echo '<h3 class="jjdev-page-header">'.$this->translate('Cell Groups List').
+	'<span class="jjdev-header-text" data-toggle="modal" data-target="#myModal">'.$this->translate('search').'</span>
+	</h3>';
+echo loadAlertMessage();
+/*Group Data into Page sets */
+$iCount = 1;
+$aGroups = $this->aGroups;
+$aGroupsPaginate = array();
+$iBatch=1;
+foreach($aGroups as $aGroup)
+{
+	$aGroupsPaginate[$iBatch][] = $aGroup;
+	if ($iCount % $this->iPerPage == 0)$iBatch++;
+	$iCount++;
+}
+
+echo '<div class="row">';
+$sNewButton = '<button class="btn btn-default btn-xs btn-block" data-toggle="modal" data-target="#myModal">'.
+			'<div class="pull-left"><span class="glyphicon glyphicon-plus-sign"></span></div>
+			<div class="pull-right">'.$this->translate('Add New Group').'</div>
+	</button>';
+
+echo generateSideBar($this->aChmsAdminLinks, $sNewButton);
+
+echo '<div class="col-md-10">';
+if(!empty($aGroupsPaginate[$this->iCurrentPage]))
+{
+	echo '<div class="table-responsive">';
+	$iTableSpan = 6;
+	echo '<table class="table table-striped">';
+	echo '<thead><tr>';
+	echo '<th>'.$this->translate('Name').'</th><th>'.$this->translate('Short Name').'</th>
+								<th>'.$this->translate('Cell Leader').'</th>
+								<th>'.$this->translate('Date Started').'</th>
+								<th class="jjdev-align-center">'.$this->translate('Members').'</th>
+								<th></th>';
+	echo '</tr></thead><tbody>';
+	foreach($aGroupsPaginate[$this->iCurrentPage] as $aGroup)
+	{
+		$sDateStarted = ($aGroup['date_started'] > 0) ? date('D d M Y', $aGroup['date_started']) : '';
+		$sLeader = (isset($aGroup['firstname'])) ? $aGroup['firstname'] .' '.$aGroup['surname']:'';
+		$iMembers = isset($aGroup['member_count']) ? $aGroup['member_count'] : 0;
+		echo '<tr>';
+		echo '<td>'.$aGroup['group_name'].'</td>';
+		echo '<td>'.$aGroup['known_as'].'</td>';
+		echo '<td>'.$sLeader.'</td>';
+		echo '<td>'.$sDateStarted.'</td>';
+		echo '<td class="jjdev-align-center">'.$iMembers.'</td>';
+		echo '<td class="jjdev-align-right">
+				<button class="btn btn-default btn-xs " onclick="url(\''.$this->baseUrl().'/chms/group-view/group_id/'.$aGroup['id'].'\')">
+					<span class="glyphicon glyphicon-eye-open"></span>'.' '.$this->translate('View').'
+				</button>
+		</td>';
+		echo '</tr>';
+	}
+	echo '</tbody></table>';
+	echo '</div>';
+}
+else
+	echo '<div class="col-md-12"><div class="alert alert-warning" role="alert">'.$this->translate('No Groups found').'</div></div>';
+
+/* Paginate Here */
+echo paginateData($aGroups, $this->baseUrl().'/chms/groups', $this->iPerPage, $this->iCurrentPage);
+echo '</div>';
+echo '</div>';
+/* ADD  GROUP */
+$aFormParams = array('data'=>array(), 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-group');
+echo createModalForm('Add/Edit Cell Group', 'chms', $aFormParams);

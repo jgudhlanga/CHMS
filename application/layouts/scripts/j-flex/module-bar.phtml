@@ -1,0 +1,67 @@
+<?php
+$frontController = Zend_Controller_Front::getInstance();
+$controllerName = $frontController->getRequest()->getControllerName();
+$actionName = $frontController->getRequest()->getActionName();
+
+$config = Zend_Registry::get('config');
+$nameSpace = new Zend_Session_Namespace('user');
+$user = (isset($nameSpace->loggedUser) && !empty($nameSpace->loggedUser)) ? $nameSpace->loggedUser : array();
+$sModules = '';
+$modules = Bootstrap::getUserModules();
+foreach ($modules as $module)
+{
+	$sBgColor = (isset($module['class_color']) && $module['class_color'] != '') ? $module['class_color'] : $this->userColor;
+	$sSelectedClass = (strtolower($controllerName) == strtolower($module['name'])) ? $sBgColor : '';
+	$moduleName = ucfirst($module['title']);
+	$description = ucfirst($module['description']);
+
+	$path = $module['path'];
+	$link = $module['link'];
+	$sBaseUrl = $config->baseUrl;
+	$sBg = createGradientBackground(NULL, $sSelectedClass);
+	$sModules.="<li style='$sBg'><a href='$sBaseUrl/$path/$link'>$moduleName</a></li>";
+}
+$sPages = '';
+if ($controllerName != '')
+{
+	$module_id = Bootstrap::getModuleID($controllerName);
+	if ($module_id > 0)
+	{
+		$pages = Bootstrap::getModules($module_id, 0);//get the actions
+		$aParentModule = Bootstrap::getModule($module_id);
+		$sSelectedColor = (isset($aParentModule['class_color'])  && $aParentModule['class_color']!= '') ? $aParentModule['class_color']: $this->userColor;
+		if (is_array($pages) && !empty($pages))
+		{
+			foreach ($pages as $page)
+			{
+				if (Control::hasAccess($controllerName, $page['link']))
+				{
+					$sPage = ucwords($page['title']);
+					$path = strtolower($page['path']);
+					$link = strtolower($page['link']);
+					$sBaseUrl = $config->baseUrl;
+					if ($this->userMenuIcon == 'bootstrap')
+						$sIcon = createGlyphicon($page['class_name'], '#fff');
+					else if ($this->userMenuIcon == 'icon-images')
+						$sIcon = loadImage($this->userTheme, NULL, $page['image'], 16, 16);
+					else
+						$sIcon = '';
+					$sPages .="<li><a href='$sBaseUrl/$path/$link' title='$page[description]'>$sIcon &nbsp;$sPage <a/></li>&nbsp;&nbsp;&nbsp;";
+				}
+			}
+		}
+	}
+}
+?>
+
+<nav class="modules-row">
+	<ul class="modules">
+		<?php echo $sModules; ?>
+	</ul
+</nav>
+<nav class="module-pages" style="background-color: #f5f5f5;">
+	<ul class="pages">
+		<?php echo $sPages; ?>
+	</ul>
+</nav>
+</header> <!--Nav Container -->

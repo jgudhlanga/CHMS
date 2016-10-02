@@ -1,0 +1,48 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/23/2016
+ * Time: 9:20 AM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ *
+ */
+$aSettings = $this->aModuleSettings;
+$sAllowQuickLinksChecked = (isset($aSettings['allow_quick_links']) && $aSettings['allow_quick_links'] > 0) ? 'checked' : '';
+?>
+
+<div class="middleBar">
+	<div class="row">
+		<div class="col-md-6">
+			<h3 class="jjdev-page-header"><?php echo $this->translate('CHMS General Settings') ?></h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<form class="form-horizontal" method="post"
+				  action="<?php echo $this->baseUrl() ?>/chms/save-general-settings">
+				<div class='form-group'>
+					<label for='allow_quick_links' class='control-label col-md-5'>
+						<?php echo $this->translate('Allow Module Quick Links') ?>
+					</label>
+
+					<div class='col-md-7'>
+						<input type="checkbox" name="allow_quick_links" id="allow_quick_links"
+							   value="1" <?php echo $sAllowQuickLinksChecked ?>>
+					</div>
+				</div>
+				<div class="col-md-12 jjdev-align-center">
+					<button type="submit" value="<?php echo $this->translate('Save') ?>" class="btn btn-sm btn-primary">
+						<span class="glyphicon glyphicon-floppy-save"></span>
+						<?php echo $this->translate('Save') ?>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="rightBar">
+	<span class="">
+
+	</span>
+</div>

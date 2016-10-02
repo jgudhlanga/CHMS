@@ -1,0 +1,70 @@
+<!--
+/**
+ * Author: jimlink
+ * Date: 7/10/2016
+ * Time: 4:41 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+ -->
+<h3 class="jjdev-page-header"><?php echo $this->translate('Members List')?>
+	<span class="jjdev-header-text" id="chms-member-search-btn" data-toggle="modal" data-target="#myModal"><?php echo $this->translate('search')?></span>
+</h3>
+<?php
+	echo loadAlertMessage();
+?>
+<div class="middleBar div-align-left jjdev-full-width">
+	<div class="row">
+		<?php
+			$aMembers = $this->aMembers;
+			/*Group Data into Page sets */
+			$iCount = 1;
+			$aMemberPaginate = array();
+			$iBatch=1;
+			foreach($aMembers as $aMember)
+			{
+				$aMemberPaginate[$iBatch][] = $aMember;
+				if ($iCount % $this->iPerPage == 0)$iBatch++;
+				$iCount++;
+			}
+			if(!empty($aMemberPaginate[$this->iCurrentPage]))
+			{
+				foreach($aMemberPaginate[$this->iCurrentPage] as $aMember)
+				{
+					$sMemberPic = (isset($aMember['profile_pic']) && $aMember['profile_pic'] != '') ? $aMember['profile_pic'] : 'default.jpg';
+					$sMemberInsert = loadImage('uploads', 'users', $sMemberPic, 90, 80, 'img-rounded', 'text-middle');
+					echo '<a  href="'.$this->baseUrl().'/chms/view-member/id/'.$aMember['id'].'">';
+					echo '<div class="col-md-4 jjdev-border jjdev-div-hover">';
+					echo '<div class="col-md-3 jjdev-details-dark">';
+					echo $sMemberInsert;
+					echo '</div>';
+					echo '<div class="col-md-9 jjdev-details-dark">';
+					echo '<span class="jjdev-header-link">'.$aMember['firstname'].' '.$aMember['surname'].'</span>'.'<br/>';
+					echo '<label class="glyphicon glyphicon-envelope"></label>'.' '.$aMember['email_address'].'<br/>';
+					echo ' '.'<label class="glyphicon glyphicon-phone"></label>'.' '.$aMember['cell_number'];
+					echo '<br/>'.'<label class="glyphicon glyphicon-phone-alt"></label>'.' '.$aMember['work_number'];
+					$sAddress = '<br/>';
+					if (isset($aMember['street_address']))$sAddress = $aMember['street_address'];
+					if (isset($aMember['city']) && $aMember['city'] != '')$sAddress .= ', '.$aMember['city'];
+					if (isset($aMember['postal_code']) && $aMember['postal_code'] != '')$sAddress .= ', '.$aMember['postal_code'];
+					echo '<br/>'.'<label class="glyphicon glyphicon-home"></label>'.' '.$sAddress;
+					echo '</div>';
+					echo '</div>';
+					echo '</a>';
+				}
+			}
+			else
+				echo '<div class="alert alert-warning" role="alert">'.$this->translate('Nothing Found').'</div>';
+		?>
+	</div>
+	<!-- PAGINATION -->
+	<?php
+		echo paginateData($aMembers, $this->baseUrl().'/chms/list-members', $this->iPerPage, $this->iCurrentPage);
+	?>
+</div>
+
+<?php
+/* SEARCH MODAL FORM */
+$aFormParams = array('data'=>array(), 'action-button'=>'Search', 'target'=>$this->baseUrl().'/chms/list-members');
+echo createModalForm('Chms Member Search', 'chms', $aFormParams);
+?>

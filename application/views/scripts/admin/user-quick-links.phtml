@@ -1,0 +1,141 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/19/2016
+ * Time: 9:11 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+$sBaseUrl = $this->baseUrl();
+$aModules = array();
+$sModuleOptions = $sViewOptions = '';
+foreach ($this->aModules as $aRow)
+{
+	$aModules[] = $aRow['mod'];
+	$aModuleOptions = array_column($aModules, 'title', 'id');
+	$sModuleOptions = createSelectOptions($aModuleOptions, $this->iModuleID);
+}
+$aViewOptions = (!empty($this->aResources)) ? array_column($this->aResources, 'resource', 'resource') : array();
+$sViewOptions = createSelectOptions($aViewOptions);
+
+$aQuickLinks = array();
+if(!empty($this->aQuickLinks))
+{
+	foreach($this->aQuickLinks as $aRow)
+	{
+		$aQuickLinks[$aRow['module_id']][]=$aRow;
+	}
+}
+$iTableSpan=4;
+?>
+<!--LIST THEM HERE -->
+<div class="row">
+	<form method="post" action="<?php echo $sBaseUrl?>/admin/update-quick-links">
+	<div class="col-md-6">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th colspan="<?php echo $iTableSpan; ?>"><?php echo $this->translate('Quick Links')?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php
+				if(!empty($aQuickLinks))
+				{
+					foreach($aQuickLinks as $iModuleID => $aQuickLink)
+					{
+						$aModule = Bootstrap::getModule($iModuleID);
+						echo '<tr class="caption">
+								<td colspan="'.$iTableSpan.'">';
+								echo "<span class='jjdev-toggle-title'>".$aModule['title']."</span>";
+								echo "<span class='jjdev-toggle-icon'><img rel='{$iModuleID}_exp' title='Collapse' src='{$this->baseUrl()}/img/{$this->userTheme}/col.png' onclick='return toggleContent($iModuleID)'></span>";
+								echo '</td>';
+							echo '</tr>';
+						foreach($aQuickLink as $aLink)
+						{
+							$sActivate = ($aLink['is_active'] == 1) ? $this->sBanBtn :$this->sOkBtn;
+							$sBtnActivate = ($aLink['is_active'] == 1) ? 'Deactivate' : 'Activate';
+							echo '<tr class="content_'.$iModuleID.'"><td>'.$aLink['resource'].'</td>
+							<td>
+								<input name="link['.$aLink['id'].']" class="form-control input-sm" value="'.$aLink['link'].'">
+							</td>';
+							echo "
+							<td style='text-align: right;'>
+								<a onclick=\"location.href='$sBaseUrl/admin/activate-quick-link/id/{$aLink['id']}/command/{$sBtnActivate}'\">$sActivate</td>";
+							echo "<td style='text-align: right;'>
+           					 <a onclick=\"return confirmDelete('$sBaseUrl/admin/delete-quick-link/', $aLink[id])\">{$this->sDeleteBtn}</a>
+							</td>";
+							echo '</tr>';
+						}
+					}
+					echo '<tr>
+							<td style="text-align: center;" colspan="'.$iTableSpan.'">
+								<button name="command" value="Update" class="btn btn-primary btn-sm" role="button">
+									<span class="glyphicon glyphicon-floppy-save"></span>
+									'.$this->translate('Update').'
+								</button>
+							</td>
+						</tr>';
+				}
+				else
+				{
+					echo '<tr><td><div class="alert alert-warning" role="alert">'.$this->translate('Nothing found').'</div></td></tr>';
+				}
+
+			?>
+			</tbody>
+		</table>
+	</div>
+</form>
+	<div class="col-md-6">
+	<div class="row">
+		<div class="col-md-12">
+			<h3 class="jjdev-page-header"><?php echo $this->translate('Add/Remove User Quick Links') ?></h3>
+		</div>
+	</div>
+	<form method="post" class="form-horizontal">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="module_id"
+							   class="control-label col-md-4"><?php echo $this->translate('Module') ?></label>
+
+						<div class="col-md-8">
+							<select name="module_id" id="module_id" class="form-control input-sm"
+									onchange="url('<?php echo $this->baseUrl() ?>/admin/user-quick-links/module_id/'+this.value)">
+								<option value="">--<?php echo $this->translate('Select Module') ?> --</option>
+								<?php echo $sModuleOptions; ?>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label for="resource" class="control-label col-md-4"><?php echo $this->translate('View') ?></label>
+
+						<div class="col-md-8">
+							<select name="resource" id="resource" class="form-control input-sm">
+								<option value="">--<?php echo $this->translate('Select View') ?> --</option>
+								<?php echo $sViewOptions; ?>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group" style="text-align: center;">
+					<button class="btn btn-primary btn-sm" type="submit" role="button" name="command"
+							value="<?php echo $this->translate('Save') ?>">
+						<span class="glyphicon glyphicon-floppy-save"></span>
+						<?php echo $this->translate('Save') ?>
+					</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+</div>
+

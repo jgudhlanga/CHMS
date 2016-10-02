@@ -1,0 +1,48 @@
+<!--
+/**
+ * Author: jimlink
+ * Date: 7/10/2016
+ * Time: 4:41 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+ -->
+<h3 class="jjdev-page-header"><?php echo $this->translate('Users List')?>
+	<span class="jjdev-header-text" id="member-search-btn"><?php echo $this->translate('search')?></span>
+</h3>
+<div class="middleBar div-align-left jjdev-full-width">
+	<div class="row">
+		<?php
+		$aUsers = $this->aUsers;
+		if(!empty($aUsers))
+		{
+			foreach($aUsers as $aUser)
+			{
+
+				$sUserPic = (isset($aUser['profile_pic']) && $aUser['profile_pic'] != '') ? $aUser['profile_pic'] : 'default.jpg';
+				$sUserInsert = loadImage('uploads', 'users', $sUserPic, 90, 80, 'img-rounded', 'text-middle');
+				echo '<a  href="'.$this->baseUrl().'/user/my-profile/id/'.$aUser['id'].'">';
+				echo '<div class="col-md-4 jjdev-border jjdev-div-hover">';
+				echo '<div class="col-md-3 jjdev-details-dark">';
+				echo $sUserInsert;
+				echo '</div>';
+				echo '<div class="col-md-9 jjdev-details-dark">';
+				echo '<span class="jjdev-header-link">'.$aUser['firstname'].' '.$aUser['surname'].'</span>'.'<br/>';
+				echo '<label class="glyphicon glyphicon-envelope"></label>'.' '.$aUser['email_address'].'<br/>';
+				echo ' '.'<label class="glyphicon glyphicon-phone"></label>'.' '.$aUser['cell_number'];
+				echo '<br/>'.'<label class="glyphicon glyphicon-phone-alt"></label>'.' '.$aUser['work_number'];
+				$sAddress = '<br/>';
+				if (isset($aUser['street_address']))$sAddress = $aUser['street_address'];
+				if (isset($aUser['city']) && $aUser['city'] != '')$sAddress .= ', '.$aUser['city'];
+				if (isset($aUser['postal_code']) && $aUser['postal_code'] != '')$sAddress .= ', '.$aUser['postal_code'];
+				echo '<br/>'.'<label class="glyphicon glyphicon-home"></label>'.' '.$sAddress;
+				echo '</div>';
+				echo '</div>';
+				echo '</a>';
+			}
+		}
+		else
+			echo '<div class="alert alert-warning" role="alert">'.$this->translate('Nothing Found').'</div>';
+		?>
+	</div>
+</div>

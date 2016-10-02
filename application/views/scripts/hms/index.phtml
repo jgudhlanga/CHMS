@@ -1,0 +1,37 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 6/5/2016
+ * Time: 8:00 PM
+ * Copyright (c) JJDEV
+ * @version 3.0 (excellence)
+ */
+#========================================== LIST ALL ACTIVE HOSTELS ====================================================
+echo '<div class="row">';
+if (!empty($this->aHostels))
+{
+	foreach ($this->aHostels as $aHostel)
+	{
+		$iOccupiedRooms = 0;
+		$iMale = 0;
+		$iFemale = 0;
+		$sMalesFemales = isset($this->aMaleFemale[$aHostel['males_females']]) ? $this->aMaleFemale[$aHostel['males_females']] : '';
+		echo '<div class="col-md-4">';
+			echo '<div class="jjdev-primary" >';
+			echo '<button class="btn btn-primary btn-lg btn-block" onclick="url(\''.$this->baseUrl().'/hms/hostel-view/hostel_id/'.$aHostel['id'].'\')">';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Hostel Name:').'</span><span class="jjdev-align-right jjdev-details-light">'.$aHostel['hostel_name'].'</span><br/>';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Warden:').'</span>
+							<span class="jjdev-align-right jjdev-details-light">'.substr($aHostel['warden_firstname'], 0, 1).' '.$aHostel['warden_surname'].'</span><br/>';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Floors:').'</span><span class="jjdev-align-right jjdev-details-light">'.$aHostel['total_floors'].'</span><br/>';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Male/Female:').'</span><span class="jjdev-align-right jjdev-details-light">'.$sMalesFemales.'</span><br/>';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Occupied Rooms:').'</span><span class="jjdev-align-right jjdev-details-light">'.$iOccupiedRooms.'</span><br/>';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Free Rooms:').'</span><span class="jjdev-align-right jjdev-details-light">0</span><br/>';
+					echo '<span class="jjdev-align-left jjdev-details-light">'.$this->translate('Total Rooms:').'</span><span class="jjdev-align-right jjdev-details-light">0</span><br/>';
+				echo '</button>';
+			echo '</div>';
+		echo '</div>';
+	}
+}
+else
+	echo '<div class="alert alert-warning" role="alert">'.$this->translate('There are no hostels set yet').'</div>';
+echo '</div>';

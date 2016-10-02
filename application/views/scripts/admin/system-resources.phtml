@@ -1,0 +1,90 @@
+<?php
+$sBaseUrl = $this->baseUrl;
+$aModules = $this->aModules;
+$iTabSpan = 3;
+$sDelete = $this->sDeleteBtn;
+echo '<div class="middleBar">';
+echo '<form method="post" action="'.$this->baseUrl().'/admin/update-system-resources">';
+$i=1;
+if ($this->iModuleID == 0)
+{
+   echo '
+      <table class="table table-striped " style="width: 500px;">
+         <tr><th colspan="'.$iTabSpan.'">'. $this->translate('System Modules').'</th></tr>
+         <tr class="caption">
+             <td style="width: 15px;"></td>
+            <td>'.$this->translate('Module').'</td>
+            <td style="width: 100px;"></td>
+         </tr>';
+         if (empty($aModules))
+            echo "<tr><td colspan='$iTabSpan'><div class='alert-warning' role='alert'>".$this->translate('Nothing found')."</div></td></tr>";
+         else
+         {
+            foreach ($aModules as $aRow)
+            {
+               $aModule = $aRow['mod'];
+               echo "<tr>
+						<td><span class='badge'>$i</span></td>
+				   		<td>$aModule[title]</td>
+                         <td>
+                              <button type='button'   class='btn btn-default btn-xs'
+                               onclick=\"url('$sBaseUrl/admin/system-resources/module_id/$aModule[id]')\">
+                                 <span class='glyphicon glyphicon-edit'></span>".$this->translate('Resources')."
+                              </button>
+                         </td>
+                      </tr>";
+				$i++;
+            }
+         }
+         echo '</table>';
+}
+else
+{
+   $aModule = $this->aModule;
+   $sModuleName = isset($aModule['title']) ? ucwords($aModule['title']) : '';
+   echo "<table class='table table-striped table-hover' style='width: 500px'>
+    <tr>
+        <th colspan='3'>$sModuleName ".$this->translate('Module Resources')."</th>
+        <tr class='caption'><td style='width:15px;'></td><td>".$this->translate('Resource')."</td><td style='width: 20px'></td></tr>
+    </tr>";
+   if (!empty($this->aResources))
+   {
+	   $j=1;
+      foreach ($this->aResources as $aResource)
+      {
+         echo "<tr>
+					<td><span class='badge'>$j</span></td>
+                    <td style='text-align: left'>$aResource[resource]</td>
+                    <td style='text-align: center'>
+                        <a onclick=\"return confirmDelete('$sBaseUrl/admin/delete-resource/resource_id/$aResource[id]/module_id/{$this->iModuleID}/', $aResource[id])\">$sDelete</a>
+                   </td>
+                </tr>";
+		  $j++;
+      }
+   }
+	else
+		echo "<tr><td colspan='$iTabSpan'><div class='alert alert-warning' role='alert'>".$this->translate('Nothing found!')."</div></td></tr>";
+echo "
+</table>";
+}
+echo '</div>';
+
+//right bar
+$sAppendUrl = ($this->iModuleID > 0)? "system-resources" : "index";
+echo '
+<div class="rightBar">
+	<span class="bottomBorder">
+   <button class="btn btn-default btn-sm" type="button" onclick="url(\''.$this->baseUrl().'/admin/'.$sAppendUrl.'\')">
+      '.$this->sLeftBtn.'
+     '.$this->translate('Back').'
+	</button></span>';
+if ($this->iModuleID == '')
+{
+	echo '
+	<span class="bottomBorder">
+	<button  type="submit" name="command" value="'.$this->translate('Update Modules and Actions').'" class="btn btn-success btn-sm">
+      <span class="glyphicon glyphicon-arrow-up"></span>
+                  '.$this->translate('Update Modules Actions').'
+    </button></span>';
+}
+echo '</form></div>';

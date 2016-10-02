@@ -1,0 +1,24 @@
+<?php
+$sBaseUrl = $this->baseUrl();
+$aDataLinks = array(
+	array('title'=>'Advanced Settings', 'link'=>'/hms/advanced-settings', 'class'=>'default',  'status'=>1),
+	array('title'=>'General Settings', 'link'=>'/hms/general-settings', 'class'=>'default', 'status'=>1),
+	array('title'=>'Hostels', 'link'=>'/hms/hostel-list', 'class'=>'default', 'status'=>1),
+	array('title'=>'Import Guests', 'link'=>'/hms/import-guests', 'class'=>'default', 'status'=>1),
+);
+echo '<div class="row">';
+foreach ($aDataLinks as $aLink)
+{
+	if($aLink['status'] != 1) continue;
+	echo '
+		<div class="col-md-3">
+			<div class="jjdev-no-border jjdev-default">
+				<button class="btn btn-sm btn-'.$aLink['class'].' btn-block"
+					type="button" onclick="url(\''.$sBaseUrl.$aLink['link'].'\')">
+					'.$this->translate($aLink['title']).'
+				</button>
+			</div>
+		</div>';
+}
+echo '</div>';
+

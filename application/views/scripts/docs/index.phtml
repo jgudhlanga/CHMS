@@ -1,0 +1,20 @@
+<div class="middleBar" style="width:98%">
+	<form method="post">
+		<table class="table table-responsive" style="width: 400px">
+			<tr>
+				<td>
+					<input type="text" class="form-control input-sm" name="search_text"
+					       required placeholder="<?php echo $this->translate('Type Document / File name here ...')?>"
+					       value="<?php echo $this->sSearchText?>">
+				</td>
+				<td style="text-align: center; width: 50px;">
+					<button type="submit" class="btn btn-default btn-sm" value="<?php echo $this->translate('Search')?>">
+						<span class="glyphicon glyphicon-search"></span>
+						<?php echo $this->translate('Search')?>
+					</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<!--show results here-->
+</div>

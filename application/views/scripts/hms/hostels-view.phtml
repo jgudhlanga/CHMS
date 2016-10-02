@@ -1,0 +1,86 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 6/12/2016
+ * Time: 7:41 PM
+ * Copyright (c) Wemasoft
+ * @version 3.0 (excellence)
+ */
+echo '<div class="middleBar" style="width: 95%">';
+# ===================================== HOSTEL DETAILS =================================================================
+$iCount = 1;
+$iTableSpan = 10;
+foreach ($this->aHostels as $aHostel)
+{
+	$sDisplay = ($iCount == 1) ? '' : 'none';
+	echo '<table class="table table-striped">';
+	$sMaleFemale =isset($this->aMaleFemale[strtolower($aHostel['males_females'])]) ? $this->aMaleFemale[strtolower($aHostel['males_females'])] : '';
+	$HostelCode = (isset($aHostel['short_name']) && $aHostel['short_name'] != '') ? '('.$aHostel['short_name'].')' : '';
+	echo '<tr>
+			<th colspan="'.$iTableSpan.'">
+			<span class="jjdev-toggle-title">
+				'.$this->translate('Hostel Name ').'  &rightarrow;  '.$aHostel['hostel_name'].$HostelCode.'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				'.$this->translate('Warden ').'  &rightarrow;  '.$aHostel['warden_firstname'].' '.$aHostel['warden_surname'].' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				'.$this->translate('Male / Female ').'  &rightarrow;  '.$sMaleFemale.'
+			</span>
+			<span class="jjdev-toggle-icon">
+				<img title="Expand" rel="'.$iCount.'_exp" src="'.$this->baseUrl().'/img/'.$this->userTheme.'/exp.png" onclick="return toggleContent('.$iCount.')">
+			</span>
+		</th>
+	</tr>';
+	//echo '</table>';
+# ===================================== HOSTEL ROOMS ===================================================================
+	//echo '<table class="table">';
+
+	$aHostelRooms = isset($this->aHostelRooms[$aHostel['id']]) ? $this->aHostelRooms[$aHostel['id']] : array();
+	$aHostelFloorRooms = array();
+	if (!empty($aHostelRooms))
+	{
+		foreach ($aHostelRooms as $aRow)
+		{
+			$aHostelFloorRooms[$aRow['hostel_floor']][] = $aRow;
+		}
+	}
+
+#================================== LIST ROOMS PER FLOOR ===============================================================
+	for ($i=1; $i <= $aHostel['total_floors']; $i++)
+	{
+		$sFloor = ($i==1) ?  'Ground Floor ' : 'Floor '.($i-1);
+		$aFloorDetails = Hms::getFloorRoom(array('hostel_id'=>$this->iHostelID, 'hostel_floor' => $i));
+		$sDisplay = 'none';
+		echo '<tr class="content_'.$iCount.'" style="display: '.$sDisplay.';">
+			<td colspan="'.$iTableSpan.'" class="jjdev-highlight">
+				<span class="jjdev-toggle-title">'.$this->translate($sFloor).'</span>
+			</td>
+		</tr>';
+		$aFlowRooms = (isset($aHostelFloorRooms[$i])) ? $aHostelFloorRooms[$i] : array();
+		$iRoom = 1;
+		if (!empty($aFlowRooms))
+		{
+			echo'<tr class="content_'.$iCount.'" style="display: '.$sDisplay.';"><td style="text-align: center" colspan="'.$iTableSpan.'">';
+			foreach ($aFlowRooms as $aRoom)
+			{
+				$sActivate = ($aRoom['is_active'] == 1) ? $this->sBanBtn : $this->sOkBtn;
+				if ($iRoom % 10 == 1) echo '<div class="blockDisplay">';
+				echo '<div class="small">';
+				echo '<div class="small-block">';
+				echo '<div class="align-left">'.$this->translate('Room:').'</div><div class="align-right">'.$aRoom['room_code'].'</div><br/>';
+				echo '<div class="align-left">'.$this->translate('Status:').'</div><div class="align-right">0</div><br/>';
+				echo '</div>';
+				echo '<div class="small-block">';
+				echo '<div class="align-left"><a>'.$this->sEditIBtn.'</a></div>';
+				echo '<div class="align-right"><a>'.$this->sDeleteBtn.'</a></div><br/>';
+				echo '</div>';
+				echo '</div>';
+				if ($iRoom % 10 == 0) echo '</div>';
+				$iRoom++;
+			}
+			echo '</td></tr>';
+		}
+		else
+			echo '<tr class="content_'.$iCount.'" style="display: '.$sDisplay.';"><td><div class="alert alert-warning" role="alert">'.$this->translate('No rooms found!').'</div></td></tr>';
+	}
+	$iCount++;
+}
+echo '</table>';
+echo '</div>';

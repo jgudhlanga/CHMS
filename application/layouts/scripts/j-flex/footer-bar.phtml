@@ -1,0 +1,35 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 5/19/2016
+ * Time: 8:16 PM
+ * Copyright (c) Wemasoft
+ * @version 3.0 (excellence)
+ */
+$sEnvFileString = file_get_contents(APPLICATION_PATH . '/configs/env.ini');
+$aData = explode('=', $sEnvFileString);
+$sWorkingEnvironment = isset($aData[1]) ? trim(strtolower($aData[1])) : 'development';
+$sEnvOptions = createSelectOptions(developmentEnvironment(), $sWorkingEnvironment);
+
+$nameSpace = new Zend_Session_Namespace('user');
+$user = (isset($nameSpace->loggedUser) && !empty($nameSpace->loggedUser)) ? $nameSpace->loggedUser : array();
+
+echo '<footer class="main-footer">';
+echo '<div class="main-footer-content">';
+echo '<a href="#top" onclick="return false;" title="Go Top"><div class="jjdev-badge-success"><span class="glyphicon glyphicon-menu-up jjdev-top-link"></span></div></a>';
+if ($user['is_developer'] == 1)
+{
+	echo '<br/>
+			<span>
+				<form method="post">
+					<select style= "width: 120px;margin: 3px;" class="text ui-widget-content ui-corner-all"  name="env" style="width: 90px;" onchange="this.form.submit()">
+						<option value="">-- ' . $this->translate('Enviroment') . ' --</option>' . $sEnvOptions . '
+					</select>
+				</form>
+			</span>';
+}
+echo '<br/>&copy; 2014 - ' . date("Y", time()) . '  | JJ-DEV &nbsp;&nbsp;<br/>
+				<span class="Holy-Spirit">' . $this->translate('Holy Spirit Empowered') . '</span>';
+echo '</div>';
+echo '</footer>';
+

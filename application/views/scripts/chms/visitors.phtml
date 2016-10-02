@@ -1,0 +1,61 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/24/2016
+ * Time: 3:42 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+echo '<h3 class="jjdev-page-header">'.$this->translate('Visitor List').
+	'<span class="jjdev-header-text" data-toggle="modal" data-target="#myModal">'.$this->translate(' + add visitor').'</span>
+	</h3>';
+ echo loadAlertMessage();
+echo '<div class="middleBar div-align-left jjdev-full-width">
+	<div class="row">';
+			$aVisitors = $this->aVisitors;
+			/*Group Data into Page sets */
+			$iCount = 1;
+			$aVisitorsPaginate = array();
+			$iBatch=1;
+			foreach($aVisitors as $aVisitor)
+			{
+				$aVisitorsPaginate[$iBatch][] = $aVisitor;
+				if ($iCount % $this->iPerPage == 0)$iBatch++;
+				$iCount++;
+			}
+			if(!empty($aVisitorsPaginate[$this->iCurrentPage]))
+			{
+				foreach($aVisitorsPaginate[$this->iCurrentPage] as $aVisitor)
+				{
+					$sDateOfVisit = ($aVisitor['date_of_visit'] > 0) ? date('D d M Y', $aVisitor['date_of_visit']) : '';
+					echo '<a  href="'.$this->baseUrl().'/chms/view-visitor/id/'.$aVisitor['id'].'">';
+					echo '<div class="col-md-3 jjdev-border jjdev-div-hover jjdev-details-dark" >';
+					echo '<span class="jjdev-header-link">'.$aVisitor['firstname'].' '.$aVisitor['surname'].'</span>'.'<br/>';
+					echo '<label class="glyphicon glyphicon-envelope"></label>'.' '.$aVisitor['email_address'].'<br/>';
+					echo ' '.'<label class="glyphicon glyphicon-phone"></label>'.' '.$aVisitor['cell_number'];
+					echo '<br/>'.'<label class="glyphicon glyphicon-phone-alt"></label>'.' '.$aVisitor['alt_number'];
+					$sAddress = '<br/>';
+					if (isset($aVisitor['street_address']))$sAddress = $aVisitor['street_address'];
+					if (isset($aVisitor['city']) && $aVisitor['city'] != '')$sAddress .= ', '.$aVisitor['city'];
+					if (isset($aVisitor['postal_code']) && $aVisitor['postal_code'] != '')$sAddress .= ', '.$aVisitor['postal_code'];
+					echo '<br/>'.'<label class="glyphicon glyphicon-home"></label>'.' '.$sAddress;
+					echo '<br/>'.'<label class="glyphicon glyphicon-calendar"></label>'.' '.$sDateOfVisit;
+					echo '</div>';
+					echo '</a>';
+				}
+			}
+			else
+				echo '<div class="alert alert-warning" role="alert">'.$this->translate('Nothing Found').'</div>';
+echo '</div>';
+		echo '<div class="jjdev-align-center">
+			<button class="btn btn-default btn-sm" onclick="url(\''.$this->baseUrl().'/chms/admin\')">
+				<span class="glyphicon glyphicon-circle-arrow-left"></span>
+				'.$this->translate('Back').'
+			</button>
+</div>';
+echo '</div>';
+echo paginateData($aVisitors, $this->baseUrl().'/chms/visitors', $this->iPerPage, $this->iCurrentPage);
+
+/* ADD / EDIT VISITOR */
+$aFormParams = array('data'=>array(), 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-visitor');
+echo createModalForm('Add/Edit Visitor', 'chms', $aFormParams);

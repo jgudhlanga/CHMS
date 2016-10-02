@@ -1,0 +1,110 @@
+<?php
+echo '<div class="middleBar" style="width: 90%">';
+/* display the work step here*/
+$sBaseUrl = $this->baseUrl;
+$iTableSpan = 11;
+//workflow details
+$aWorkFlow = $this->aWorkflow;
+$sWorkflowName = (isset($aWorkFlow['workflow_name']) && $aWorkFlow['workflow_name'] != '') ? $aWorkFlow['workflow_name'] : '';
+$sModuleTitle = (isset($aWorkFlow['module_title']) && $aWorkFlow['module_title'] != '') ? '('. $aWorkFlow['module_title'].')' : '';
+
+//steps details
+$aWorkFlowSteps = $this->aWorkflowSteps;
+
+//messaging
+if  ($this->sError != '')
+{
+   echo "<div id='divMessage' style='width: 50%; margin: 0 auto;' class='alert alert-warning' role='alert'>".$this->translate($this->sError)."</div><br/><br/>";
+}
+
+echo "<table class='table table-striped' style='width: 100%'>
+        <tr><th colspan='$iTableSpan'>$sWorkflowName $sModuleTitle ".$this->translate('Steps')."</th></tr>
+        <tr class='caption'>
+            <td style='width: 30px'>#</td>
+            <td style='width: 30px'></td>
+            <td style='width: 80px'></td>
+            <td style='width: 80px'></td>
+            <td>".$this->translate('Step Title')."</td>
+            <td>".$this->translate('Step Name')."</td>
+            <td>".$this->translate('Description')."</td>
+            <td>".$this->translate('Status')."</td>
+            <td  style='text-align: center'>".$this->translate('Order')."</td>
+            <td style='width: 80px'></td>
+            <td style='width: 30px'></td>
+        </tr>
+";
+if(!empty($aWorkFlowSteps))
+{
+   foreach($aWorkFlowSteps as $aStep)
+   {
+      $sButtonActivate = ($aStep['is_active'] == 1) ? "Deactivate" : 'Activate';
+      $sButtonClass = ($aStep['is_active'] == 1) ? "warning" : 'success';
+      $sIconClass = ($aStep['is_active'] == 1) ? "unchecked" : 'check';
+	   $sNotes = (strlen(strip_tags($aStep['step_notes'])) > 80) ? substr(strip_tags($aStep['step_notes']), 0, 80).'...' : strip_tags($aStep['step_notes']);
+      echo  "<tr>
+            <td style='text-align: center'>$aStep[step_position]</td>
+            <td style='text-align: center'>
+                <button class='btn btn-default btn-xs'
+                    onclick=\"url('$sBaseUrl/developer/workflow-step/workflow_id/$aStep[workflow_id]/step_id/$aStep[id]')\">
+                    <span class='glyphicon glyphicon-edit'></span>
+                    ".$this->translate('Edit')."
+                </button>
+            </td>
+            <td style='text-align: center'>
+                    <button type='button' role='button' class='btn btn-default btn-xs'
+                     onclick=\"url('$sBaseUrl/developer/step-activities/workflow_id/$aStep[workflow_id]/step_id/$aStep[id]')\">
+                    <span class='glyphicon glyphicon-edit'></span>
+                    ".$this->translate('Step Settings')."
+                </button>
+            </td>
+                <td style='text-align: center'>
+                    <button type='button' role='button' class='btn btn-default btn-xs'
+                        onclick=\"url('$sBaseUrl/developer/workflow-operators/workflow_id/$aStep[workflow_id]/step_id/$aStep[id]')\">
+                    <span class='glyphicon glyphicon-edit'></span>
+                     ".$this->translate('Operators')."
+                    </button>
+                </td>
+            <td>$aStep[step_title]</td>
+            <td>$aStep[step_name]</td>
+            <td>$sNotes</td>
+            <td style='text-align: center'>$aStep[step_status]</td>
+            <td style='text-align: center'>
+               <a href='$sBaseUrl/developer/order-steps/direction/down/step_id/$aStep[id]/workflow_id/$aStep[workflow_id]'>".$this->sDownBtn."</a>
+               <a href='$sBaseUrl/developer/order-steps/direction/up/step_id/$aStep[id]/workflow_id/$aStep[workflow_id]'>".$this->sUpBtn."</a>
+            </td>
+            <td style='text-align: center'>
+                 <button type='button' role='button' class='btn btn-$sButtonClass btn-xs' style='width: 100px' onclick=\"url('$sBaseUrl/developer/activate-workflow-step/step_id/$aStep[id]/workflow_id/$aStep[workflow_id]/command/$sButtonActivate')\">
+                 <span class='glyphicon glyphicon-$sIconClass'></span>
+                  ".$this->translate($sButtonActivate)."
+                 </button>
+            </td>
+            <td style='text-align: center'><a
+               onclick=\"return confirmDelete('{$this->baseUrl}/developer/delete-workflow-step/step_id/$aStep[id]/workflow_id/$aStep[workflow_id]/', $aStep[id])\">"
+                  .$this->sDeleteBtn."</a>
+            </td>
+        </tr>";
+   }
+}
+else
+{
+   echo "<tr>
+            <td colspan='$iTableSpan' style='text-align: center;'>
+                <p class='text-warning'>".$this->translate('No steps found ')."</p>
+            </td>
+         </tr>";
+}
+echo "</table><br/><br/>";
+/*add or edit a step*/
+
+echo $this->sForm;
+
+echo '</div>';/*end of the midBar*/
+/*right bar*/
+
+echo "<div class='rightBar' style='width: 10%'>
+    <button class='btn btn-default btn-sm' onclick=\"url('{$this->baseUrl}/developer/workflow')\">
+        {$this->sLeftBtn}"
+      .$this->translate('Back')
+      ."</button>
+</div>";/*end of the rightBar*/
+showMessage('divMessage');

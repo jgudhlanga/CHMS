@@ -1,0 +1,45 @@
+</header>
+<div class="container">
+
+	<!-- Static navbar -->
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<?php
+						$aModuleLinks = Bootstrap::getModules(Session::get('stand_alone_module_id'));
+					$config = Zend_Registry::get('config');
+					if (is_array($aModuleLinks) && !empty($aModuleLinks))
+					{
+						foreach ($aModuleLinks as $page)
+						{
+							if (Control::hasAccess($controllerName, $page['link']))
+							{
+								$sPage = ucwords($page['title']);
+								$path = strtolower($page['path']);
+								$link = strtolower($page['link']);
+								$sBaseUrl = $config->baseUrl;
+								if ($this->userMenuIcon == 'bootstrap')
+									$sIcon = createGlyphicon($page['class_name'], '#fff');
+								else if ($this->userMenuIcon == 'icon-images')
+									$sIcon = loadImage($this->userTheme, NULL, $page['image'], 16, 16);
+								else
+									$sIcon = '';
+								echo "<li class='vertical-pipe'><a href='$sBaseUrl/$path/$link' title='$page[description]'>$sIcon &nbsp;&nbsp;&nbsp;$sPage</a></li>";
+							}
+						}
+					}
+					?>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div><!--/.container-fluid -->
+	</nav>
+</div>

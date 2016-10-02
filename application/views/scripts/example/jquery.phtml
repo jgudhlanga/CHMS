@@ -1,0 +1,325 @@
+<?php
+
+echo '<div class="middleBar" style="width: 85%;">';
+	foreach ($this->oPaginator as $aModule)
+	{
+		echo $this->accordionPane('my-data',  $aModule['title']);
+	}
+	echo $this->accordionContainer('my-data', array('active' => 'none', 'collapsible' => 'true'));
+?>
+<br/>
+
+<div><img id="largeDisplay" src="<?php echo $this->baseUrl();?>/img/uploads/users/james_gudhlanga.png"></div>
+
+<ul id="list1">
+	<li class="a">Item 1</li>
+	<li class="a">Item 2</li>
+	<li class="b">Item 3</li>
+	<li class="b">Item 4</li>
+</ul>
+<p class="a">This is paragraph 1</p>
+<p id="para1">This is paragraph 2</p>
+<p class="b">This is paragraph 3</p>
+<p id="para4" lang="en-us">This is paragraph 4</p>
+
+<!-- Links -->
+
+<a href="doc1.pdf"><img src="<?php echo $this->baseUrl();?>/img/menu_icons/classic/setting.png" alt="my-img"/></a><br/>
+<!--<a href="doc1.doc">Link 2</a><br/>
+<a href="doc1.doc">Link 3</a><br/>
+<a href="doc1.pdf">Link 4</a><br/>
+<a href="doc1.pdf">Link 5</a><br/>-->
+
+<!-- Example form -->
+<?php //echo $this->sForm;?>
+<h1>Event Handlers</h1>
+<style type="text/css">
+	.normal{
+		width: 500px; height: 200px; background-color: green; color: #000; margin: 0 auto;
+	}
+	.properties{
+		width: 500px; height: 100px; background-color: #ccc; color: #000; margin: 0 auto;
+	}
+	.highLighted{
+		background-color: #71b5ff;
+	}
+	.listItems{
+		min-width: 500px; margin: 0 auto; text-align: left; color: #000;
+	}
+	.listItems tr th{
+		background-color: green; color: #ffffff; border-radius: 0px;
+	}
+	.listItems tr.captionRow{
+		font-weight:  bold;
+	}
+	.listItems tr td{
+		padding: 8px;
+	}
+	.trEven{
+		background-color: rgba(0, 229, 0, 0.39);
+	}
+	.trOdd {
+		background-color: rgba(0, 148, 0, 0.49);
+	}
+	.trHover{
+		background: rgba(223, 223, 223, 0.43);
+	}
+	#animations{
+		background-color: #0066cc; width: 500px; height: 100px; margin: 0 auto; color: #fff;
+	}
+	#photoShow{
+		width: 400px; height: 450px; margin: 0 auto; border: 3px solid rgb(153, 153, 153); padding: 5px;
+		background-color: rgba(206, 206, 206, 0.99);
+	}
+	#photoShow div{
+		position: absolute;
+		z-index: 0;
+	}
+	#photoShow div.current{
+		z-index: 2;
+	}
+	#photoShow div.previous{
+		z-index: 1;
+	}
+	#toolTip{
+		display: none;
+	}
+	.image-rotator{
+		width: 384px; height: 434px; border: solid 1px rgb(255, 255, 255);
+	}
+	.thumbnail{
+		width: 160px; height: 120px; border: solid 1px rgb(116, 114, 255); margin-bottom: 2px; margin-top: 2px;
+	}
+	#largeDisplay{
+		width: 500px; height: 400px; border: solid 1px rgb(116, 114, 255);
+	}
+</style>
+<div id="eventTarget" class="normal"></div>
+<h1>Event Object Properties</h1>
+<div class="properties"></div><br/>
+<div class="properties"></div><br/>
+<div class="properties"></div>
+<h1>Project 2 Using jQuery for stripe table and hover effect </h1>
+<table class="listItems">
+	<tr><th colspan="2">Items</th></tr>
+	<tr class="captionRow"><td>Item</td><td>Price</td></tr>
+	<tr><td>Pen</td><td>12.00</td></tr>
+	<tr><td>Pencil</td><td>9.00</td></tr>
+	<tr><td>Ruler</td><td>20.00</td></tr>
+	<tr><td>Book</td><td>13.00</td></tr>
+	<tr><td>Bible</td><td>200.00</td></tr>
+	<tr><td>Rubber</td><td>2.00</td></tr>
+	<tr><td>Campus</td><td>30.00</td></tr>
+	<tr><td>Graph Book</td><td>26.00</td></tr>
+	<tr><td>Color Pencil</td><td>30.00</td></tr>
+	<tr><td>Counter Book</td><td>80.00</td></tr>
+</table>
+
+<h2>jQuery Animations and Effects + FadeIn and FadeOut + Sliding + Animation </h2>
+<div id="animations"></div>
+<input type="button" value="Show" id="show">
+<input type="button" value="Hide" id="hide">
+<input type="button" value="Toggle" id="toggle"> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" value="FadeIn" id="fadein">
+<input type="button" value="FadeOut" id="fadeout">
+<input type="button" value="Fade To 3" id="fade_to_3">
+<input type="button" value="Fade To 1" id="fade_to_1">&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" value="Slide Up" id="slide_up">
+<input type="button" value="Slide Down" id="slide_down">
+<input type="button" value="Slide Toggle" id="slide_toggle"> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" value="Grow Right" id="grow_right">
+<input type="button" value="Big Text" id="big_text">
+<input type="button" value="Move Div" id="move_div">
+<input type="button" value="Multiple" id="multiple">
+
+<!--Image Rotator-->
+<h2>JQuery Image Rotator</h2>
+<div id="photoShow">
+	<div><img src="<?php echo $this->baseUrl();?>/img/uploads/users/james_gudhlanga.png" class="image-rotator"/></div>
+	<div><img src="<?php echo $this->baseUrl();?>/img/uploads/users/DK.jpg" class="image-rotator"/></div>
+	<div><img src="<?php echo $this->baseUrl();?>/img/uploads/users/james.png" class="image-rotator"/></div>
+	<div><img src="<?php echo $this->baseUrl();?>/img/uploads/users/jj_7.JPG" class="image-rotator"/></div>
+	<div><img src="<?php echo $this->baseUrl();?>/img/uploads/users/jimmyfrancy.jpg" class="image-rotator"/></div>
+	<div><img src="<?php echo $this->baseUrl();?>/img/uploads/users/brothers.jpg" class="image-rotator"/></div>
+</div>
+
+</div>
+<!-- ======================================= RIGHT BAR ======================================================-->
+<div class="rightBar" style="width: 15%;">
+	<?php echo $this->datePicker('dp1', '', array('defaultDate' => date('Y/m/d', time())));?>
+	<div><a href="<?php echo $this->baseUrl();?>/img/uploads/users/james_gudhlanga.png"  title="James Gudhlanga"><img src="<?php echo $this->baseUrl();?>/img/uploads/users/james_gudhlanga.png" class="thumbnail"/></a></div>
+	<div><a href="<?php echo $this->baseUrl();?>/img/uploads/users/DK.jpg" title="Dorothy Khuzwayo"><img src="<?php echo $this->baseUrl();?>/img/users/DK.jpg" class="thumbnail" /></a></div>
+	<div><a href="<?php echo $this->baseUrl();?>/img/uploads/users/james.png" title="James Gudhlanga"><img src="<?php echo $this->baseUrl();?>/img/users/james.png" class="thumbnail" /></a></div>
+	<div><a href="<?php echo $this->baseUrl();?>/img/uploads/users/jj_7.JPG"  title="James Gudhlanga"><img src="<?php echo $this->baseUrl();?>/img/users/jj_7.JPG" class="thumbnail" /></a></div>
+	<div><a href="<?php echo $this->baseUrl();?>/img/uploads/users/jimmyfrancy.jpg" title="James & Francisca"><img src="<?php echo $this->baseUrl();?>/img/uploads/users/jimmyfrancy.jpg" class="thumbnail" /></a></div>
+	<div><a href="<?php echo $this->baseUrl();?>/img/users/brothers.jpg" title="Gudhlanga Brothers"><img src="<?php echo $this->baseUrl();?>/img/uploads/users/brothers.jpg" class="thumbnail" /></a></div>
+</div>
+
+<!-- ======================================= JQUERY ======================================================-->
+
+<script type="text/javascript">
+	$("document").ready(function(){
+		/*
+		//this is for the each function
+		var border = 1;
+		var leftMargin = 10;
+		$('p').each(function(){
+			$(this).css('border', border + 'px solid orange');
+			$(this).css('margin-left', leftMargin);
+			border +=1;
+			leftMargin +=10;
+		});
+		//append an image tag to the <a> tags with attribute[href] ending with pdf
+		var imgStyle="style='width:20px; height: 20px;'";
+		$('a[href$=pdf]').before("<img src='../img/pdf.png' " + imgStyle +  " align='absbottom'/>");
+		$('a[href$=doc]').before("<img src='../img/word.png'  " + imgStyle +  "  align='absbottom'/>");
+		//creating a new element inside #list1
+		$('#list1').html("<li>New List Item</li>");
+		//create a new paragraph
+		var newParagraph = $("<p>This is a new paragraph</p>");
+		$("#para4").html(newParagraph.html());
+		//create a text in paragraph
+		$("p:last").text("This is last paragraph");
+
+		//adding the target attribute to a <a> element
+		$("a").attr("target", "_blank");
+		//remove attribute
+		$('a').removeAttr("href");*/
+		//assigning attributes the object notation
+		$('img[alt^=my-]').attr({src:"../img/pdf.png", alt:"PDF Icon", title:"PDF"});
+		//using append to add text
+		/*$('p').append(' text appended');
+		//using prepend
+		$('p').prepend('Hello prepended!');*/
+		//using appendTo
+		//$('p:last').prependTo('p:first');
+		//applying multiple styles to an elememnt using the object notation
+		$('p:last').css({border: "1px solid #999", "background-color": "purple", "color":"white"});
+
+		//assign height of middleBar div to rightBar div
+		//$('.rightBar').height($('.middleBar').height());
+		//alert($('.middleBar').height());
+		/*event handling */
+		$('.normal').text('Mouse over this Div to see the effect. Click on it to unbind the mouse over effect')
+		//run the highLight function on mouserover and mouseleave
+		$('#eventTarget').on('mouseover mouseleave', highLight);
+		//on click run an anonymous function shut off the hover effect and show a new paragraph
+		$('#eventTarget').on('click', function(){
+			$('#eventTarget').off('mouseover mouseleave', highLight);
+			$('#eventTarget').html('<p>You have turned off the hover effect</p>');
+		});
+
+		$('.properties').html('<p>Click this div to view the event object properties</p>');
+		$('#animations').html('<p>I am Ready to be animated hey! </p>');
+		//apply stripped to the table
+		$('.listItems tr:even').addClass('trEven');
+		$('.listItems tr:odd').addClass('trOdd');
+		$('.listItems tr').hover(
+				function(){
+					$(this).toggleClass("trHover");
+				},
+				function(){
+					$(this).toggleClass("trHover");
+				}
+		);
+		//event bubbling or delegation
+		$('.listItems').on('click', 'tr', function(evt){
+			alert($(this).text());
+		})
+
+	});
+	function highLight(evt)
+	{
+		$('#eventTarget').toggleClass('highLighted');
+	}
+	//event object properties
+	$(function(){
+		$('.properties').click(function(evt){
+			$(this).html('X coordinate: ' + evt.pageX + ', Y coordinate: ' + evt.pageY + ', target: ' + evt.target + ', type: ' + evt.type);
+		});
+	});
+	//Animations and Fading + sliding
+	$(function () {
+		$('#show').click(function () {
+			$('#animations').show(3000, function () {
+				alert('Done Showing Callback')
+			});
+		});
+		$('#hide').click(function () {
+			$('#animations').hide('normal');
+		});
+		$('#toggle').click(function () {
+			$('#animations').toggle('slow', function(){
+					$('.listItems tr:even').css('background-color', 'blue');
+			});
+		});
+		//fade in fade out
+		$('#fadein').click(function () {
+			$('#animations').fadeIn('normal');
+		});
+		$('#fadeout').click(function () {
+			$('#animations').fadeOut('normal');
+		});
+		$('#fade_to_3').click(function () {
+			$('#animations').fadeTo('slow', 0.3);
+		});
+		$('#fade_to_1').click(function () {
+			$('#animations').fadeTo('slow', 1.0);
+		});
+		//sliding
+		$('#slide_up').click(function () {
+			$('#animations').slideUp('slow');
+		});
+		$('#slide_down').click(function () {
+			$('#animations').slideDown('slow');
+		});
+		$('#slide_toggle').click(function () {
+			$('#animations').slideToggle('normal');
+		});
+		/*animations*/
+		$('#grow_right').click(function(){
+			$('#animations').animate({ width: "1000px"}, 1000);
+		});
+
+		$('#big_text').click(function () {
+			$('#animations').animate({fontSize: "20px"}, 1000);
+		});
+		$('#move_div').click(function(){
+			$('#animations').animate({ left: "500" }, 1000, 'swing');
+		});
+
+		//$('.listItems tr').css({display: "none"});
+
+	});
+	/*this will execute the image rotate function after 2 seconds*/
+	$(function(){
+		setInterval("imageRotator()", 5000);
+	});
+	/* Image thumb nail to large size */
+	$(function()
+	{
+		$('a:has(img.thumbnail)').click(function(){
+			var largePath = $(this).attr('href');
+			var caption = $(this).attr('title');
+			//alert(largePath);
+			$('#largeDisplay').attr({src: largePath});
+			return false;
+		});
+	});
+
+	function imageRotator()
+	{
+		var oCurPhoto = $("#photoShow div.current");
+		var oNxtPhoto = oCurPhoto.next();
+
+		if(oNxtPhoto.length == 0)
+			oNxtPhoto = $("#photoShow div:first");
+
+		oCurPhoto.removeClass('current').addClass('previous');
+		oNxtPhoto.css({opacity : 0.0}).addClass('current').animate({ opacity: 1.0}, 1000, function(){
+			oCurPhoto.removeClass('previous');
+		});
+	}
+
+</script>
+

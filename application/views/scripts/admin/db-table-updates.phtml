@@ -1,0 +1,128 @@
+<?php
+$iTabSpan = 10;
+$sBaseUrl = $this->baseUrl();
+$sUserTheme = $this->userTheme;
+//main bar
+$aGeneralTables = $this->aGeneralTables;
+
+echo "
+	<div class='middleBar' style='width: 100%'>
+		<table class='table'  style='width: 98%'>
+			<tr>
+				<th colspan=\"$iTabSpan\">
+					<span class='jjdev-toggle-title'>".$this->translate('General Tables Update Settings')."</span>
+					<span class='jjdev-toggle-icon'><img title='Collapse' rel='1_exp' src='$sBaseUrl/img/$sUserTheme/col.png' onclick='return toggleContent(1)'></span>
+                </th>
+			</tr>
+			<tr class='caption content_1'>
+				<td width='40'>&nbsp;</td>
+				<td>".$this->translate('Name')."</td>
+				<td>".$this->translate('Database Table')."</td>
+				<td>".$this->translate('Database Table Columns')."</td>
+				<td>".$this->translate('Order BY')."</td>
+				<td>".$this->translate('Foreign Key Columns')."</td>
+				<td width='40'>".$this->translate('Width')."</td>
+				<td width='40'>&nbsp;</td>
+				<td width='150'>&nbsp;</td>
+				<td width='20'>&nbsp;</td>
+			</tr>";
+//echo the captured setting here
+
+if (empty($aGeneralTables))
+{
+	echo "<tr class='content_1'><td colspan=\"$iTabSpan\"><div class='alert alert-warning' role='alert'>".$this->translate('No results found')."</div></td></tr>";
+}
+else
+{
+	foreach ($aGeneralTables as $aRow)
+	{
+		$sButtonActivate = ($aRow['is_active'] == 1) ? 'Deactivate' : 'Activate';
+		$sIconClass = ($aRow['is_active'] == 1) ? $this->sBanBtn : $this->sOkBtn;
+     	 $sWidth = isset($aRow['width']) ? rtrim($aRow['width'], '%').'%' : '100%';
+		echo '
+			<tr class="content_1">
+				<td style="text-align: center">
+					<button type="button"  class="btn btn-default btn-xs" onclick="location.href=\''.$sBaseUrl.'/admin/db-table-updates/id/'.$aRow['id'].'\'">
+					<span class="glyphicon glyphicon-edit"></span>'.$this->translate('Edit').'
+					</button>
+				</td>
+				<td style="text-align: left;">'.$aRow['setting_name'].'</td>
+				<td style="text-align: left;">'.$aRow['table_name'].'</td>
+				<td style="text-align: left;">'.$aRow['table_columns'].'</td>
+				<td style="text-align: left;">'.$aRow['order_by'].'</td>
+				<td style="text-align: left;">'.$aRow['foreign_keys'].'</td>
+				<td>'.$sWidth.'</td>
+				<td>
+					<button type="button" class=" btn btn-default btn-xs"
+					 onclick="location.href=\''.$sBaseUrl.'/admin/edit-tables/id/'.$aRow['id'].'/width/'.rtrim($aRow['width'], '%').'\'">
+						<span class="glyphicon glyphicon-edit"></span>
+						'.$this->translate("Add / Edit Items").'
+					</button>
+				</td>
+				<td>
+					<button type="button" class=" btn btn-default btn-xs" style="width: 100px;"
+					onclick="location.href=\''.$sBaseUrl.'/admin/activate-db-table-update-settings/id/'.$aRow['id'].'/command/'.$sButtonActivate.'\'">
+						'.$sIconClass.' '.$this->translate($sButtonActivate).'
+					</button>
+				</td>';
+			echo "<td style=\"text-align: center\"><a alt='Delete' title='Delete' onclick=\"return confirmDelete('$sBaseUrl/admin/delete-db-table-update-settings/', $aRow[id])\">{$this->sDeleteBtn}</a></td>
+			</tr>";
+
+	}
+}
+echo "</table>";
+
+//capture a new setting here
+$aEdit = $this->aEdit;
+$sName = isset($aEdit['setting_name']) ? $aEdit['setting_name'] : '';
+$sDbTable = isset($aEdit['table_name']) ? $aEdit['table_name'] : '';
+$sDbTableCols = isset($aEdit['table_columns']) ? $aEdit['table_columns'] : '';
+$sOrderBY = isset($aEdit['order_by']) ? $aEdit['order_by'] : '';
+$sForeignKeys = isset($aEdit['foreign_keys']) ? $aEdit['foreign_keys'] : '';
+$sWidth = isset($aEdit['width']) ? rtrim($aEdit['width'], '%').'%' : '100%';
+$sButton = (isset($aEdit['id']) && $aEdit['id'] > 0) ? 'Update' : 'Save';
+$iID = (isset($aEdit['id']) && $aEdit['id'] > 0) ? $aEdit['id'] : 0;
+$sRequired = required();
+
+echo "<br/>	<form method='post' action='{$this->baseUrl()}/admin/save-db-table-update-settings'>
+			<input type='hidden' name='id' value='$iID'>
+			<table class='table table-striped'  style='width: 50%'>
+				<tr>
+				    <th colspan='2'><span class='jjdev-toggle-title'>" .$this->translate('Add / Edit Table Settings').
+                        "</span><span class='jjdev-toggle-icon'><img  tittle='Collapse' rel='2_exp' src='$sBaseUrl/img/$sUserTheme/col.png' onclick='return toggleContent(2)'></span>
+                    </th>
+            </tr>
+				<tr class='content_2'>
+					<td class='caption' width='150'>".$this->translate('Name').$sRequired."</td>
+					<td><input type='text' name='setting_name' value='$sName' class='form-control input-sm' placeholder='".$this->translate('Setting Name..')."' required></td>
+				</tr>
+				<tr class='content_2'>
+					<td class='caption' width='150'>".$this->translate('Db Table Name').$sRequired."</td>
+					<td><input type='text' name='table_name' value='$sDbTable' class='form-control input-sm' placeholder='".$this->translate('Table Name..')."' required></td>
+				</tr>
+				<tr class='content_2'>
+					<td class='caption' width='150'>".$this->translate('Table Columns')."</td>
+					<td><input type='text' name='table_columns' value='$sDbTableCols' class='form-control input-sm' placeholder='".$this->translate('Table Columns..')."'></td>
+				</tr>
+				<tr class='content_2'>
+					<td class='caption' width='150'>".$this->translate('Order By')."</td>
+					<td><input type='text' name='order_by' value='$sOrderBY' class='form-control input-sm' placeholder='".$this->translate('Order Data by the specified column..')."'></td>
+				</tr>
+				<tr class='content_2'>
+					<td class='caption' width='150'>".$this->translate('Foreign Key Columns')."</td>
+					<td><input type='text' name='foreign_keys' value='$sForeignKeys' class='form-control input-sm' placeholder='".$this->translate('Foreign Key Columns..')."'></td>
+				</tr>
+				<tr class='content_2'>
+					<td class='caption' width='150'>".$this->translate('Width')."</td>
+					<td><input type='text' name='width' value='$sWidth' class='form-control input-sm' placeholder='".$this->translate('Width..')."'></td>
+				</tr>
+				<tr class='content_2'><td colspan='2'>&nbsp;</td></tr>
+				<tr class='content_2'><td colspan='2' style='text-align: center;'>
+					<button type='submit' value='Save' name='command' class='btn btn-primary btn-sm'>
+						<span class='glyphicon glyphicon-floppy-save'></span>
+						".$this->translate($sButton)."
+					</button></td></tr>
+			</table></form>
+</div>";
+
+

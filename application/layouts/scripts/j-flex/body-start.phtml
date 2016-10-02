@@ -1,0 +1,14 @@
+<?php if(Session::loggedUserId() > 0):?>
+	<?php include_once("top-bar.phtml");?>
+	<?php if(Session::get('stand_alone_module_id') > 0):?>
+		<?php include_once("stand-alone.phtml");?>
+	<?php else: ?>
+		<?php include_once("module-bar.phtml");?>
+	<?php endif ?>
+<?php endif ?>
+
+<div class="main-content-wrapper">
+	<div class="main-content">
+	<?php echo Bootstrap::createModuleQuickLinks(); ?>
+
+

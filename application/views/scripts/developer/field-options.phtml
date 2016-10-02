@@ -1,0 +1,75 @@
+<?php
+$sBaseUrl = $this->baseUrl;
+$iTabSpan = 6;
+$aField = $this->aField;
+$sUp = $this->sUpBtn;
+$sDown = $this->sDownBtn;
+$sDelete = $this->sDeleteBtn;
+$iModuleId = $this->iModuleId;
+$iFormId = $this->iFormId;
+$iFieldId = $this->iFieldId;
+?>
+<div class="middleBar" style="width: 80%;">
+  <table class="table table-striped" style="width: 90%;">
+      <tr><th colspan="<?php echo  $iTabSpan?>"><?php echo $this->translate('Options for '. $aField['field_label'])?></th></tr>
+     <tr class="caption">
+        <td style="width: 50px;"></td>
+        <td><?php echo $this->translate('Value')?></td>
+        <td><?php echo $this->translate('Name')?></td>
+        <td style="width: 30px;"><?php echo $this->translate('Order')?></td>
+        <td style="width: 50px;"></td>
+        <td style="width: 50px;"></td>
+     </tr>
+     <?php
+     if(!empty($this->aFieldOptions))
+     {
+        foreach ($this->aFieldOptions as $aRow)
+        {
+           $sButtonActive = ($aRow['is_active'] == 1) ? 'Deactivate' : 'Activate';
+           $sButtonIcon = ($aRow['is_active'] == 1) ? 'ban-circle' : 'check';
+           echo "<tr>
+                    <td>
+                        <button class='btn btn-default btn-xs' role='button'
+                            onclick=\"url('$sBaseUrl/developer/field-options/form_id/$iFormId/module_id/$iModuleId/field_id/$iFieldId/id/$aRow[id]')\">
+                            <span class='glyphicon glyphicon-edit'></span>
+                            Edit
+                        </button>
+                    </td>
+                    <td>$aRow[option_value]</td>
+                    <td>$aRow[option_name]</td>
+                     <td style='text-align: center;'>
+                        <a href=\"$sBaseUrl/developer/order-field-options/direction/down/form_id/$iFormId/module_id/$iModuleId/field_id/$iFieldId/id/$aRow[id]\">$sDown</a>
+                        <a href=\"$sBaseUrl/developer/order-field-options/direction/up/form_id/$iFormId/module_id/$iModuleId/field_id/$iFieldId/id/$aRow[id]\">$sUp</a>
+                     </td>
+                    <td>
+                        <button class='btn btn-default btn-xs' role='button' style='width:100px';
+                            onclick=\"url('$sBaseUrl/developer/activate-field-option/form_id/$iFormId/module_id/$iModuleId/field_id/$iFieldId/id/$aRow[id]/command/$sButtonActive')\">
+                            <span class='glyphicon glyphicon-$sButtonIcon'></span>
+                            $sButtonActive
+                        </button>
+                    </td>
+                    <td style='width:10px; text-align: center;'><a onclick=\"return confirmDelete('$sBaseUrl/developer/delete-field-option/form_id/$iFormId/module_id/$iModuleId/field_id/$iFieldId/', $aRow[id])\">$sDelete</a></td>
+                </tr>";
+        }
+     }
+     else
+     {
+        echo "<tr>
+			<td colspan='$iTabSpan' >
+				<div class='alert alert-warning' role='alert'>".$this->translate('Nothing found')."</div>
+			</td>
+        </tr>";
+     }
+     ?>
+     <tr><td colspan="<?php echo  $iTabSpan?>">&nbsp;</td></tr>
+  </table>
+	<!-- Add new option here-->
+		<?php echo $this->sForm?>
+</div>
+<div class="rightBar" style="width: 15%">
+   <button class="btn btn-default btn-sm" role="button"
+               onclick="url('<?php echo $this->baseUrl?>/developer/fields/form_id/<?php echo $this->iFormId?>/module_id/<?php echo $this->iModuleId?>')">
+      <?php echo $this->sLeftBtn;?>
+      <?php echo $this->translate('Back')?>
+   </button>
+</div>

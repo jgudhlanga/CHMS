@@ -1,0 +1,56 @@
+<!DOCTYPE html >
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<?php
+		$frontController = Zend_Controller_Front::getInstance();
+		$controllerName = $frontController->getRequest()->getControllerName();
+		$actionName = $frontController->getRequest()->getActionName();
+
+		$config = Zend_Registry::get('config');
+		$nameSpace = new Zend_Session_Namespace('user');
+		$user = (isset($nameSpace->loggedUser) && !empty($nameSpace->loggedUser)) ? $nameSpace->loggedUser : array();
+
+		if (isset($_REQUEST['env']) && $_REQUEST['env'] != '')
+		{
+			Bootstrap::saveEnviroment($_REQUEST);
+		}
+	?>
+	<?php echo $this->jQuery()->enable(); ?>
+	<title><?php echo ucwords($config->title) . ' | ' . ucwords($controllerName) ?></title>
+	<?php echo loadJqueryLib();?>
+	<script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/js/tabber.js"></script>	<!-- tabber  js -->
+	<?php if (strpos($controllerName, 'example') !== FALSE):?>
+		<script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/js/ajax-learner.js"></script>	<!-- tabber  js -->
+	<?php endif?>
+	<script src="<?php echo $this->baseUrl(); ?>/js/ckeditor/ckeditor.js"></script>
+	<script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/js/jjdev.js"></script><!-- jjdev custom  js-->
+	<?php if (isset($user['id']) && $user['id'] > 0)
+		echo "<link rel='stylesheet' href='{$this->baseUrl()}/css/{$this->userTheme}/{$this->userTheme}.css'/>";
+		else
+			echo "<link rel='stylesheet' href='{$this->baseUrl()}/css/styles.css'/>";
+	?>
+	<?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image', 'href' => $this->baseUrl() . '/img/favicon.png'));
+	if (strpos($actionName, 'bvb') !== FALSE || strpos($actionName, 'report') !== FALSE || strpos($controllerName, 'report') !== FALSE)
+		echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/jjdevgrid.css');
+	echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/'.$this->userTheme.'/bootstrap.css')
+		->prependStylesheet($this->baseUrl() . '/css/tabber.css')
+		->prependStylesheet($this->baseUrl() . '/css/jquery/jquery.ui.all.css')
+		->prependStylesheet($this->baseUrl() . '/css/jjdev-custom-core.css')
+	?>
+</head>
+<body class="body">
+        <?php include_once("{$this->userTheme}/body-start.phtml");?>
+		<?php echo $this->layout()->content?>
+		<!--Footer-->
+	<?php include_once("{$this->userTheme}/body-end.phtml");?>
+<form method="post">
+<input type="hidden" name="my-url" id="my-url" value="<?php echo  $this->baseUrl();?>">
+<input type="hidden" name="my-theme" id="my-theme" value="<?php echo $this->userTheme;?>">
+</form>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<?php
+$sBaseUrl = $this->baseUrl();
+$aDataLinks = array(
+	array('title'=>'Database Tables Update', 'link'=>'/admin/db-table-updates', 'class'=>'default', 'status'=>1),
+	array('title'=>'Db Settings Advanced', 'link'=>'/admin/db-settings', 'class'=>'default', 'status'=>1),
+	array('title'=>'Module Quick Link Setup', 'link'=>'/admin/user-quick-links', 'class'=>'default', 'status'=>1),
+	array('title'=>'Organization Setup', 'link'=>'/admin/organisation-config', 'class'=>'default', 'status'=>1),
+	array('title'=>'Resources Control Base', 'link'=>'/admin/system-resources', 'class'=>'default', 'status'=>1),
+	array('title'=>'System Export Settings', 'link'=>'/admin/system-export-settings', 'class'=>'default', 'status'=>1),
+	array('title'=>'System Import Settings', 'link'=>'/admin/system-import-settings', 'class'=>'default', 'status'=>1),
+	array('title'=>'User Management', 'link'=>'/user/index', 'class'=>'default', 'status'=>1),
+);
+echo '<div class="row">';
+foreach ($aDataLinks as $aLink)
+{
+	if($aLink['status'] != 1) continue;
+	echo '
+		<div class="col-md-3">
+			<div class="jjdev-no-border jjdev-default">
+				<button class="btn btn-sm btn-'.$aLink['class'].' btn-block"
+					type="button" onclick="url(\''.$sBaseUrl.$aLink['link'].'\')">
+					'.$this->translate($aLink['title']).'
+				</button>
+			</div>
+		</div>';
+}
+echo '</div>';

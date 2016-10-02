@@ -1,0 +1,32 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 4/30/2016
+ * Time: 5:42 PM
+ * Copyright (c) JJDEV
+ * @version 3.0 (excellence)
+ */
+echo '<div class="middleBar" style="width: 80%">';
+echo '<form><table class="table">';
+echo '<tr><th>'.$this->translate($this->aFolder['title']).'</th></tr>';
+if (!empty($this->aDocuments))
+{
+
+}
+else
+{
+	echo '<tr><td><div class="alert alert-warning" role="alert">'.$this->translate('Nothing found in this folder').'</div></td></tr>';
+}
+echo '</table></form>';
+echo '</div>';
+
+/*side bar*/
+echo '<div class="rightBar" style="width: 20%;">';
+echo '<button type="button" class="btn btn-xs btn-default" onclick="url(\''.$this->baseUrl().'/docs/new-folder/folder_id/'.$this->aFolder['id'].'\')">';
+		echo '<span class="glyphicon glyphicon-edit"></span>' . $this->translate('Add New Folder');
+echo '</button>';
+echo '<br/><br/>';
+echo '<button type="button" class="btn btn-xs btn-default" onclick="url(\''.$this->baseUrl().'/docs/new-file/folder_id/'.$this->aFolder['id'].'\')">';
+		echo '<span class="glyphicon glyphicon-edit"></span>' . $this->translate('Upload New File');
+echo '</button>';
+echo '</div>';

@@ -1,0 +1,212 @@
+<?php
+$sBaseUrl = $this->baseUrl;
+$iTabSpan = 12;
+$aForm = $this->aForm;
+$sForm = isset($aForm['name']) ? $aForm['name'] : '';
+$aFields = $this->aFields;
+
+$aEdit = (isset($this->aPreFields) && !empty($this->aPreFields)) ? $this->aPreFields :
+	(isset($this->aField) && !empty($this->aField)) ? $this->aField : '';
+$sError = '';
+if (isset($this->sError) && $this->sError != '')
+	$sError = "<div class='alert alert-warning' id='divMessage' role='alert' style='width: 50%; margin: 0 auto;'>" . $this->translate($this->sError) . "</div>";
+
+echo <<<HTML
+<div class="middleBar" style="width: 98%;">
+	$sError
+	<table class="table table-striped">
+		<tr>
+			<th colspan="$iTabSpan"><span class="jjdev-toggle-title">
+				{$this->translate('Fields For Form:')}{$sForm}</span>
+				<span class="jjdev-toggle-icon"><img rel="1_exp" src="$sBaseUrl/img/{$this->userTheme}/col.png" onclick="return toggleContent(1)"></span>
+			</th>
+		</tr>
+		<tr class="caption content_1">
+			<td style="text-align: center;" width="50"></td>
+			<td style="text-align: center;" width="50">#</td>
+			<td>{$this->translate('Label')}</td>
+			<td>{$this->translate('Name')}</td>
+			<td>{$this->translate('Element Type')}</td>
+			<td>{$this->translate('Data Type')}</td>
+			<td>{$this->translate('Required')}</td>
+			<td>{$this->translate('Is Numeric')}</td>
+			<td>{$this->translate('Source')}</td>
+			<td style="text-align: center;" width="50">{$this->translate('Order')}</td>
+			<td style="text-align: center;" width="50"></td>
+			<td style="text-align: center;"width="50"></td>
+		</tr>
+HTML;
+$aDataTypes = itemsToArray(ELEMENT_DATA_TYPES, array('id', 'name'), 'is_data_type=1 and is_active=1');
+$aElementTypes = itemsToArray(ELEMENT_DATA_TYPES, array('id', 'name'), 'is_element_type=1 and is_active=1');
+
+if (empty($aFields))
+{
+	echo "<tr class='content_1'><td colspan=\"$iTabSpan\"><div class='alert alert-warning' role='alert'> {$this->translate('No fields for this form:')}{$sForm}</div></td></tr>";
+}
+else
+{
+	foreach ($aFields as $aField)
+	{
+		$iFieldPosition = (isset($aField['field_position']) && $aField['field_position'] != '') ? $aField['field_position'] : '';
+		$sFieldLabel = (isset($aField['field_label']) && $aField['field_label'] != '') ? $aField['field_label'] : '';
+		$sFieldName = (isset($aField['field_name']) && $aField['field_name'] != '') ? $aField['field_name'] : '';
+		$sElementType = (isset($aField['field_element_type']) && $aField['field_element_type'] > 0) ? $aElementTypes[$aField['field_element_type']] : '';
+		$sDataType = (isset($aField['field_data_type']) && $aField['field_data_type'] > 0) ? $aDataTypes[$aField['field_data_type']] : '';
+		$sRequired = (isset($aField['field_is_required']) && $aField['field_is_required'] == 1) ? 'Yes' : 'No';
+		$sNumeric = (isset($aField['field_is_numeric']) && $aField['field_is_numeric'] == 1) ? 'Yes' : 'No';
+		$sButtonActive = ($aField['is_active'] == 1) ? 'Deactivate' : 'Activate';
+		$sButtonIcon = ($aField['is_active'] == 1) ? 'unchecked' : 'check';
+
+		$sSource = (isset($aField['field_source']) && $aField['field_source'] != '') ? $aField['field_source'] : '';
+		if ((trim(strtolower($sElementType)) == 'radio' || trim(strtolower($sElementType)) == 'checkbox' || trim(strtolower($sElementType)) == 'select') && $sSource == '')
+		{
+			$sSourceCol = "<button type='button'  class='btn btn-default btn-xs'
+					onclick=\"url('$sBaseUrl/developer/field-options/field_id/$aField[id]/form_id/$aField[form_id]/module_id/{$this->iModuleId}');\">
+					<span class='glyphicon glyphicon-menu-down'></span>
+					{$this->translate('Options')}
+				</button>";
+		}
+		else
+			$sSourceCol = $sSource;
+
+		echo <<<HTML
+		<tr class="content_1">
+			<td class="center">
+				<button type="button"  class="btn btn-default btn-xs"
+					onclick="location.href='$sBaseUrl/developer/fields/id/$aField[id]/form_id/$aField[form_id]/module_id/{$this->iModuleId}';">
+					<span class="glyphicon glyphicon-edit"></span>
+					{$this->translate('Edit')}
+				</button>
+			</td>
+			<td style="text-align: center;">$iFieldPosition</td>
+			<td>$sFieldLabel</td>
+			<td>$sFieldName</td>
+			<td>$sElementType</td>
+			<td>$sDataType</td>
+			<td>$sRequired</td>
+			<td>$sNumeric</td>
+			<td>$sSourceCol</td>
+			<td style="text-align: center;">
+				<a href="$sBaseUrl/developer/order-fields/direction/down/id/$aField[id]/form_id/$aField[form_id]/module_id/{$this->iModuleId}">{$this->sDownBtn}</a>
+				<a href="$sBaseUrl/developer/order-fields/direction/up/id/$aField[id]/form_id/$aField[form_id]/module_id/{$this->iModuleId}">{$this->sUpBtn}</a>
+			</td>
+			<td>
+			    <button class='btn btn-default btn-xs' role='button' style='width:100px'
+						onclick="url('$sBaseUrl/developer/activate-field/form_id/$aField[form_id]/id/$aField[id]/module_id/{$this->iModuleId}/command/$sButtonActive')">
+						<span class='glyphicon glyphicon-$sButtonIcon'></span>
+						$sButtonActive
+                </button>
+            </td>
+			<td style="text-align: center;">
+				<a onclick="return confirmDelete('$sBaseUrl/developer/delete-field/form_id/$aField[form_id]/module_id/{$this->iModuleId}/', $aField[id])">{$this->sDeleteBtn}</a>
+			</td>
+		</tr>
+HTML;
+	}
+}
+echo <<<HTML
+		<tr><td colspan="$iTabSpan">&nbsp;</td></tr>
+		<tr>
+			<td colspan="$iTabSpan" style="text-align: center;">
+					<button type="button"  class="btn btn-sm btn-default" onclick='location.href="$sBaseUrl/developer/forms/module_id/{$this->iModuleId}"'>
+						{$this->sLeftBtn}
+						{$this->translate('Back')}
+					</button>
+			</td>
+		</tr>
+	</table><br/>
+HTML;
+$iAutoPosition = getNextField(FORM_FIELDS, 'field_position', 'form_id=' . $this->iFormId);
+$iFieldPosition = (isset($aEdit['field_position']) && $aEdit['field_position'] > 0) ? $aEdit['field_position'] : $iAutoPosition;
+$sFieldName = (isset($aEdit['field_name']) && $aEdit['field_name'] != '') ? $aEdit['field_name'] : '';
+$sFieldLabel = (isset($aEdit['field_label']) && $aEdit['field_label'] != '') ? $aEdit['field_label'] : '';
+$iFieldElementType = (isset($aEdit['field_element_type']) && $aEdit['field_element_type'] > 0) ? $aEdit['field_element_type'] : '';
+$iFieldDataType = (isset($aEdit['field_data_type']) && $aEdit['field_data_type'] > 0) ? $aEdit['field_data_type'] : '';
+$sRequiredChecked = (isset($aEdit['field_is_required']) && $aEdit['field_is_required'] == 1) ? 'checked' : '';
+$sNumericChecked = (isset($aEdit['field_is_numeric']) && $aEdit['field_is_numeric'] == 1) ? 'checked' : '';
+$sFieldDefault = (isset($aEdit['field_default']) && $aEdit['field_default'] != '') ? $aEdit['field_default'] : '';
+$sFieldPlaceHolder = (isset($aEdit['field_placeholder']) && $aEdit['field_placeholder'] != '') ? $aEdit['field_placeholder'] : '';
+$sSource = (isset($aEdit['field_source']) && $aEdit['field_source'] != '') ? $aEdit['field_source'] : '';
+$sCkEditorChecked = (isset($aEdit['ck_editor']) && $aEdit['ck_editor'] == 1) ? 'checked' : '';
+$sTitle = (isset($aEdit['id']) && $aField['id'] > 0) ? 'Edit' : 'Add';
+$sDataTypeOptions = createSelectOptions(ELEMENT_DATA_TYPES, $iFieldDataType, array('id', 'name'), array('is_data_type=1', 'is_active=1'));
+$sElementTypeOptions = createSelectOptions(ELEMENT_DATA_TYPES, $iFieldElementType, array('id', 'name'), array('is_element_type=1', 'is_active=1'));
+
+$sRequired = required();
+
+$sMessage = (isset($this->sMessage) && $this->sMessage != '') ? $this->sMessage : '';
+
+echo'
+<form method="post">
+	<input type="hidden" name="form_id" value="'.$this->iFormId.'">
+	<input type="hidden" name="module_id" value="'.$this->iModuleId.'">
+	<table class="table table-striped" style="width:80%">
+		<tr><th colspan="4">'.$sTitle.' '.$this->translate('Form Fields').'</th></tr>
+		<tr>
+			<td class="caption">'.$this->translate('Position').$sRequired.'</td>
+			<td><input type="text" value="'.$iFieldPosition.'" name="field_position"  id="position" class="form-control input-sm" style="width: 15%" required ></td>
+			<td class="caption">'.$this->translate('Label').$sRequired.'</td>
+			<td><input type="text" value="'.$sFieldLabel.'" name="field_label" id="label" class="form-control input-sm" style="width: 98%" required></td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Name').$sRequired.'</td>
+			<td><input type="text" value="'.$sFieldName.'" name="field_name" id="name" class="form-control input-sm" style="width: 98%" required></td>
+			<td class="caption">'.$this->translate('Elem Type').$sRequired.'</td>
+			<td>
+				<select name="field_element_type" id="element_type" class="form-control" style="width: 98%" required>
+					<option value=""> --'.$this->translate('Select Type').'-- </option>'.$sElementTypeOptions.'
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Data Type').$sRequired.'</td>
+			<td>
+				<select name="field_data_type" id="data_type" class="form-control" style="width: 98%" required>
+					<option value="">-- '.$this->translate('Select Input Type').' --</option>'.$sDataTypeOptions.'
+				</select>
+			</td>
+			<td class="caption">'.$this->translate('Validators').'</td>
+			<td>
+				<span style="float: left;">'.$this->translate('Required').'&nbsp;
+					<input type="checkbox" value="1" name="field_is_required" id="required" '.$sRequiredChecked.'>
+				</span>
+				<span style="float: left; margin-left: 20px;">'.$this->translate('Numeric').'&nbsp;
+					<input type="checkbox" value="1" name="field_is_numeric" id="numeric" '.$sNumericChecked.'>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Default Value').'</td>
+			<td>
+				<input type="text" value="'.$sFieldDefault.'" name="field_default" id="default" class="form-control input-sm">
+			</td>
+			<td class="caption">'.$this->translate('Apply Ck-Editor').'</td>
+			<td>
+				<input type="checkbox" name="ck_editor" '.$sCkEditorChecked.' id="ck_editor" value="1">
+			</td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Placeholder').'</td>
+			<td colspan="3">
+				<textarea  name="field_placeholder" id="field_placeholder" class="form-control input-sm">'.$sFieldPlaceHolder.'</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td class="caption">'.$this->translate('Db Source').'</td>
+			<td colspan="3">
+				<textarea  name="field_source" id="source" class="form-control input-sm">'.$sSource.'</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center" colspan="4">
+				<button type="submit" value="'.$this->translate('Save').'" class="btn btn-primary btn-sm" name="command">
+						<span class="glyphicon glyphicon-floppy-save"></span>
+						'.$this->translate('Save').'
+				</button>
+			</td>
+		</tr>
+	</table>
+</form>';
+
+echo '</div>';
+showMessage('divMessage');

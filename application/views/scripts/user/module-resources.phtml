@@ -1,0 +1,143 @@
+<?php
+$sBaseUrl = $this->baseUrl;
+$aRights = $this->aRights;
+$aMod  = $this->aModule;
+$aRole = $this->aRole;
+$sRoleName = isset($aRole['name'])  ? $aRole['name'] :'';
+$sModuleName = isset($aMod['title'])  ? $aMod['title'] :'';
+
+$iColSpan = count($aRights)+3;
+if ($this->iControllerID > 0 && $this->iRoleID > 0)
+{
+	$aResources = $this->aResources;
+   $aRoleResourceRights = $this->aResourceRights;
+	$sHeader ='';
+	foreach ($aRights as $key => $sValue)
+	{
+		$sHeader .= "<td style='width: 20px; text-align: center;'>$sValue</td>";
+	}
+	echo '
+<form method="post" action="'.$this->baseUrl().'/user/update-role-page-rights">
+   <input type="hidden" name="ctrl_id" value="'.$this->iControllerID.'">
+   <input type="hidden" name="role_id" value="'.$this->iRoleID.'">
+<div class="middleBar" style="width: 80%">
+	<table class="table  table-striped " style="width: 60%;">
+		<tr><th colspan="'.$iColSpan.'">
+		  '.$this->translate(' Page Level Rights for Role').': '. $sRoleName .'&rightarrow;'.$this->translate('Module').':'. 		$sModuleName.'</b></th></tr>
+		<tr class="caption">
+		<td style="width:15px;"></td>
+		<td>'.$this->translate('Method').'</td>'.$sHeader.'</tr>';
+	if (count($aResources) > 0)
+	{
+		$i= 1;
+		foreach ($aResources as $aRow)
+		{
+			$sRightOptions = '';
+			foreach ($aRights as $key => $sValue)
+			{
+            $sSelected = '';
+            if (isset($aRoleResourceRights[$aRow['id']]) && $aRoleResourceRights[$aRow['id']] == $key) $sSelected ="checked";
+            $sRightOptions .= "<td style='width: 20px; text-align: center;'>
+			   <input type='radio' name=\"access_level[$aRow[id]]\" value=\"$key\" $sSelected></td>";
+			}
+			echo <<<HTML
+	<tr>
+		<td><span class="badge">$i</span></td>
+		<td style="font-weight: bold;">$aRow[resource]</td>
+		$sRightOptions
+	</tr>
+HTML;
+			$i++;
+		}
+	}
+	else
+		echo "<tr><td colspan=\"$iColSpan\" style='text-align: center'>
+			<div class='alert alert-warning' role='alert'>".$this->translate('No Methods set for this Controller')."</div>
+			</td></tr>";
+	echo '
+		<tr><td colspan="'.$iColSpan.'" style="text-align: center">
+			<button type="button" class="btn btn-default btn-sm" onclick="url(\''.$sBaseUrl.'/user/module-resources/role_id/'.$this->iRoleID.'\')">
+				'.$this->sLeftBtn.'
+				'.$this->translate('Back').'
+			</button>
+			&nbsp;&nbsp;&nbsp;
+			<button type="submit" name="command" class="btn btn-default btn-sm" value="'.$this->translate('Update').'">
+				<span class="glyphicon glyphicon-floppy-save"></span>
+				'.$this->translate('Update').'
+			</button>
+		</td></tr>
+		<tr><td colspan="'.$iColSpan.'">&nbsp;</td></tr>
+		</table>
+</form>
+</div>';
+
+}
+else
+{
+	$aModules = $this->aModules;
+   $aRoleModuleRights = $this->aModuleRights;
+	$sHeader = '';
+	foreach ($aRights as $key => $sValue)
+	{
+		$sHeader .= "<td style='width: 20px; text-align: center;'>$sValue</td>";
+	}
+	echo'
+<div class="middleBar" style="width: 80%">
+    <form method="post" action="'.$this->baseUrl().'/user/update-role-module-rights">
+       <input type="hidden" name="role_id" value="'.$this->iRoleID.'">
+	<table class="table  table-striped " style="width: 100%;">
+	<tr><th colspan="'.$iColSpan.'">'.$this->translate('Module Level Rights for Role').': '.$sRoleName.'</th></tr>
+		<tr class="caption">
+		<td style="width: 15px;"></td>
+		  <td style="text-align: left;">'.$this->translate('Module').'</td>
+		  <td style="text-align: left;">'.$this->translate('Description').'</td>
+		  '.$sHeader.'</tr>';
+	$i=1;
+	foreach ($aModules as $aModule)
+	{
+		$aRow = $aModule['mod'];
+		$sRightOptions = '';
+		foreach ($aRights as $key => $sValue)
+		{
+         $sSelected = '';
+         if (isset($aRoleModuleRights[$aRow['id']]) && $aRoleModuleRights[$aRow['id']] == $key) $sSelected ="checked";
+			$sRightOptions .= "<td style='width: 20px; text-align: center;'>
+			<input type='radio' name=\"access_level[$aRow[id]]\" value=\"$key\" $sSelected></td>";
+		}
+		$sName = (isset($aRow['name']) && $aRow['name'] != '') ? ucfirst($aRow['title']) : '';
+		$sDescription = (strlen(strip_tags($aRow['description'])) > 100) ? substr(strip_tags($aRow['description']), 0, 100).'...' : strip_tags($aRow['description']);
+		echo <<<HTML
+	<tr>
+		<td><span class="badge">$i</span></td>
+		<td style="text-align: left; font-weight: bold;">
+		   <a href="$sBaseUrl/user/module-resources/role_id/{$this->iRoleID}/ctrl_id/$aRow[id]">
+		     $sName</a>
+		</td>
+		<td style="text-align: left">$sDescription</td>
+		$sRightOptions
+	</tr>
+HTML;
+		$i++;
+	}
+
+	echo'
+		<tr><td colspan="'.$iColSpan.'">&nbsp;</td></tr>
+		<tr>
+			<td colspan="'.$iColSpan.'" style="text-align: center;">
+				<button type="button" class="btn btn-default btn-sm" onclick="url(\''.$this->baseUrl().'/user/user-roles\')">
+				'.$this->sLeftBtn.'
+				'.$this->translate('Back').'
+				</button>
+				&nbsp;&nbsp;&nbsp;
+				<button type="submit" name="command" class="btn btn-default btn-sm" value="'.$this->translate('Update').'">
+					<span class="glyphicon glyphicon-floppy-save"></span>
+					'.$this->translate('Update').'
+				</button>
+			</td>
+		</tr>
+		</table>
+		</form>
+</div>';
+}
+
+

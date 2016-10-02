@@ -1,0 +1,17 @@
+<h1>An error occurred</h1>
+<h3><?php echo $this->message ?></h3>
+
+<? if (APPLICATION_ENV =='development' ): ?>
+
+	<h4>Exception information:</h4>
+	<p>
+		<strong>Message:</strong> <?php echo $this->exception->getMessage(); ?>
+	</p>
+
+	<h4>Stack trace:</h4>
+	<pre><?php echo $this->exception->getTraceAsString() ?></pre>
+
+	<h4>Request Parameters:</h4>
+    <pre><?  print_r($this->request->getParams()); ?></pre>
+
+<? endif; ?>

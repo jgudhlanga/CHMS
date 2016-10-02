@@ -1,0 +1,35 @@
+<?php
+$sBaseUrl =  $this->baseUrl();
+$aSettings = $this->aSettings;
+$sFolderIcon = Docs::getIcon();
+echo "<div class='middleBar' style='width: 60%'>
+<form method='post' enctype='multipart/form-data'>
+<table class='table' style='width: 90%' >
+<tr><th colspan='2'>".$this->translate('Documents Setup')."</th></tr>
+<tr>
+   <td class='caption'>".$this->translate('Folder Icon')."</td>
+   <td><input type='file' name='folder_icon'><span style='float: right; vertical-align: top;'>$sFolderIcon</span></td>
+</tr>
+<tr>
+   <td class='caption'>".$this->translate('Folder / File Icon Size')."</td>
+   <td style='text-align: left'><b>".$this->translate('Width')."</b>&nbsp;<input type='text' name='icon_width' value='$aSettings[icon_width]'>
+   <b>".$this->translate('Height')."</b>&nbsp;<input type='text' name='icon_height' value='$aSettings[icon_height]'></td>
+</tr>
+<tr>
+   <td class='caption'>".$this->translate('Core Folders')."</td>
+   <td style='text-align: left'><button type='button' class='btn btn-default btn-xs' onclick=\"url('$sBaseUrl/docs/core-folders/')\">
+        <span class='glyphicon glyphicon-edit'></span>
+        ".$this->translate('Edit')."
+        </button>
+   </td>
+</tr>
+<tr>
+   <td colspan='2' style='text-align: center'><button type='submit'name='command' value='".$this->translate('Save')."' class='btn btn-default btn-sm' >
+        <span class='glyphicon glyphicon-floppy-save'></span>
+        ".$this->translate('Save')."
+        </button>
+   </td>
+</tr>
+";
+
+echo "</table></form></div>"; /*end of the main div*/

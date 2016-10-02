@@ -1,0 +1,154 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/23/2016
+ * Time: 11:33 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+$aZone = $this->aZone;
+$sDateStarted = ($aZone['date_started'] > 0) ? date('D d M Y', $aZone['date_started']) : 'Not Set';
+$sDateCreated = ($aZone['date_created'] > 0) ? date('D d M Y', $aZone['date_created']) : 'Not Set';
+$sGroupLeader = isset($aZone['firstname']) ? $aZone['firstname'] . ' ' . $aZone['surname'] : 'Not Set';
+$sActivate = ($aZone['is_active'] == 1) ? 'Deactivate' : 'Activate';
+$sActivateClass = ($aZone['is_active'] == 1) ? 'default' : 'default';
+$sActivateIcon = ($aZone['is_active'] == 1) ? 'ban-circle' : 'check';
+
+echo '<div class="row">';
+	echo '<div class="col-md-8">';
+		echo loadAlertMessage();
+		echo '<table class="table table-responsive table-striped">
+			<thead>
+				<tr><td colspan="2">
+				<div class="jjdev-page-header">'
+					.$this->translate('Zone Full View').
+					'<span class="jjdev-toggle-icon">
+						<img title="Collapse" rel="1_exp" src="'.$this->baseUrl().'/img/'.$this->userTheme.'/col.png"
+									onclick="return toggleContent(\'1\')">
+					</span>'.
+		'</div>
+				</td></tr>
+			</thead>
+			<tbody>
+				<tr class="content_1 jjdev-no-border">
+					<td colspan="2" style="text-align: right">
+						<button type="button" role="button" class="btn btn-default btn-xs"
+				onclick="url(\''.$this->baseUrl().'/chms/zones\')">	'.$this->sLeftBtn.' '.$this->translate('Back to Zones').'
+			</button>
+			<button type="button" role="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal">
+				<span class="glyphicon glyphicon-edit"></span>'.' '.$this->translate('Edit').'
+			</button>
+			<button type="button" role="button" class="btn btn-default btn-xs"
+				onclick="url(\''.$this->baseUrl().'/chms/zone-membership/zone_id/'.$aZone['id'].'\')">
+					<span class="glyphicon glyphicon-user"></span>'.' '.$this->translate('Add Members').'
+			</button>
+			<button type="button" role="button" class="btn btn-'.$sActivateClass.' btn-xs"
+				onclick="url(\''.$this->baseUrl().'/chms/activate-zone/command/'.$sActivate.'/zone_id/'.$aZone['id'].'\')">
+				<span class="glyphicon glyphicon-'.$sActivateIcon.'"></span>'.' '.$this->translate($sActivate).'
+			</button>
+			<button type="button" role="button" class="btn btn-danger btn-xs"
+			onclick="return confirmDelete(\''.$this->baseUrl().'/chms/delete-zone/\', '.$aZone['id'].')">
+				<span class="glyphicon glyphicon-trash"></span>'.' '.$this->translate('Delete Zone').'
+			</button>
+					</td>
+				</tr>
+				<tr class="content_1"><td class="caption" style="width: 100px;">'.$this->translate('Name').'</td><td>'.$aZone['zone_name'].'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Short Name').'</td><td>'.$aZone['known_as'].'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Zone Leader').'</td><td>'.$sGroupLeader.'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Date Started').'</td><td>'.$sDateStarted.'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Date Created').'</td><td>'.$sDateCreated.'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Zone Theme').'</td><td>'.$aZone['zone_theme'].'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Members').'</td><td>'.count($this->aZoneMembers).'</td></tr>
+				<tr class="content_1"><td class="caption">'.$this->translate('Description').'</td><td>'.$aZone['description'].'</td></tr>
+				<tr class="content_1"><td colspan="2">&nbsp;</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-6">
+
+	</div>
+</div>';
+$aZoneMembers = $this->aZoneMembers;
+echo '<div class="row">';
+echo '<div class="col-md-8">';
+echo '<div class="jjdev-page-header">'
+	.$this->translate('Zone Members').
+	'<span class="jjdev-toggle-icon">
+					<img title="Collapse" rel="2_exp" src="'.$this->baseUrl().'/img/'.$this->userTheme.'/col.png"
+						onclick="return toggleContent(\'2\')">
+				</span>'.
+	'</div>';
+echo '<form method="post" id="zone_members" action="'.$this->baseUrl().'/chms/remove-zone-membership" >';
+echo '<input type="hidden" name="zone_id" value="'.$this->iZoneID.'">';
+if(!empty($aZoneMembers))
+{
+	$iSpan = 7;
+	echo '<div class="table-responsive">';
+	echo '<table class="table table-striped">';
+	echo '<thead>';
+	echo '<tr class="content_2">
+			<th style="font-size: 10px; text-transform: lowercase;">
+				<input type="checkbox" id="parent" onclick="checkAll(\'zone_members\', \'checkbox\')">
+				<i>(check all)</i>
+			</th>
+			<th>'.$this->translate('Gender').'</th>
+			<th>'.$this->translate('Title').'</th>
+			<th>'.$this->translate('First Name').'</th>
+			<th>'.$this->translate('Surname').'</th>
+			<th>'.$this->translate('Member Since').'</th>
+			<th></th>
+		</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+	foreach($aZoneMembers as $aMember)
+	{
+		$sGender = isset($this->aGender[$aMember['gender']]) ? $this->aGender[$aMember['gender']] : '';
+		$sTitle = isset($this->aTitles[$aMember['title']]) ? $this->aTitles[$aMember['title']] : '';
+		$sDateJoined = (isset($aMember['zone_date_joined']) && $aMember['zone_date_joined'] > 0) ?
+			date('d-M-Y', $aMember['zone_date_joined']) : '';
+		echo '<tr class="content_2">';
+		echo '<td><input type="checkbox" name="members['.$aMember['member_zone_link_id'].']"></td>';
+		echo '<td>'.$sGender.'</td><td>'.$sTitle.'</td>';
+		echo '<td>'.$aMember['firstname'].'</td><td>'.$aMember['surname'].'</td>';
+		echo '<td>'.$sDateJoined.'</td>';
+		echo '<td class="jjdev-align-right">';
+		echo "&nbsp;<button class='btn btn-default btn-xs' type='button'>
+						<span class='glyphicon glyphicon-user'></span>
+						".$this->translate('Statistics')."
+			</button>";
+		echo '</td>';
+		echo '</tr>';
+	}
+
+	echo '<tr class="content_2">';
+	echo '<td colspan="'.$iSpan.'" style="text-align: center">';
+	echo "<button class='btn btn-default btn-xs' type='submit' name='command'>
+						<span class='glyphicon glyphicon-minus-sign'></span>
+						".$this->translate('Remove Selected from Zone')."
+			</button>";
+	echo "&nbsp;<button class='btn btn-default btn-xs' type='submit' name='command'>
+						<span class='glyphicon glyphicon-envelope'></span>
+						".$this->translate('Contact Selected Members')."
+			</button>";
+	echo "&nbsp;<button class='btn btn-primary btn-xs' type='submit' name='command'>
+						<span class='glyphicon glyphicon-time'></span>
+						".$this->translate('All Zone Statistics')."
+			</button>";
+	echo '</td>';
+	echo '</tr>';
+	echo '</tbody>';
+	echo '</table>';
+	echo '</div>';
+}
+else
+{
+	echo '<div class="alert alert-warning" role="alert">'.$this->translate('No Zone Members Found!').'</div>';
+}
+echo '</form>';
+echo '</div><!--END OF DIV COL-MD-8-->';
+echo '</div><!--END OF DIV ROW-->';
+/* ADD / EDIT ZONE */
+$aFormParams = array('data'=>$aZone, 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-zone');
+echo createModalForm('Add/Edit Zone', 'chms', $aFormParams);
+

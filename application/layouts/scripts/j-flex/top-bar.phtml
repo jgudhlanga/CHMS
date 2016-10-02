@@ -1,0 +1,95 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 5/21/2016
+ * Time: 2:14 PM
+ * Copyright (c) JJDEV
+ * @version 3.0 (excellence)
+ *
+ */
+$name = isset($user['firstname']) ? $user['firstname'] . ' ' . $user['surname'] : '';
+$profilePic = isset($user['profile_pic']) ? $user['profile_pic'] : '';
+$country = (isset($user['country']) && $user['country'] != '') ? $user['country'] . '.png' : 'South Africa';
+
+$aOrganisation = Bootstrap::getOrganizationSettings();
+$sLogo = (isset($aOrganisation['logo']) && $aOrganisation['logo'] != '') ? $aOrganisation['logo'] : 'default_logo.png';
+?>
+<header class="main-header">
+	<!--<nav class="navbar navbar-right" style="background-color: #000; padding: 2px; height: 20px;">-->
+	<div class="container-fluid jjdev-margin-top-2">
+		<ul class="nav navbar-nav navbar-left">
+			<li class="dropdown">
+				<a href="#" class="jjdev-custom-anchor dropdown-toggle" data-toggle="dropdown">
+					<?php echo $this->translate('Developer')?>
+					<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li>
+						<a href="/developer/index">
+							<i class="glyphicon glyphicon-console"></i>
+							<?php echo $this->translate('Developers Index')?>
+						</a>
+					</li>
+					<li>
+						<a href="/example/index">
+							<i class="glyphicon glyphicon-education"></i>
+							<?php echo $this->translate('Learning Curve')?>
+						</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li class="dropdown">
+				<a href="#" class="jjdev-custom-anchor dropdown-toggle" data-toggle="dropdown">
+					<?php echo loadImage('uploads', 'users', $profilePic, 25, 25, 'img-circle', 'text-middle')?>
+					<?php echo $name ?> <b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li>
+						<a href="/user/my-profile">
+							<i class="glyphicon glyphicon-user"></i>
+							<?php echo $this->translate('Profile')?>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-toggle="modal" data-target="#mySettings">
+							<i class="glyphicon glyphicon-cog"></i>
+							<?php echo $this->translate('Settings')?>
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo Zend_Registry::get('config')->baseUrl?>/login/logout">
+							<i class="glyphicon glyphicon-off"></i>
+							<?php echo $this->translate('Log Out')?>
+						</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<!--</nav>-->
+	<div class="content-container">
+		<div class="div-content-left">
+
+		</div>
+		<div class="div-content-right">
+		</div>
+	</div>
+	<div class="content-container">
+		<div class="div-content-left">
+			<?php echo loadImage(Null, Null, $sLogo, NULL, NULL, 'img-responsive'); ?>
+		</div>
+		<div class="div-content-right">
+			<!--<form class="form-inline" role="form">
+					<div class="form-group">
+						<input type="text" class="form-control input-sm" required style="width: 100%;"
+							   id="search-text" placeholder="<?php echo $this->translate('Search the System...')?>">
+					</div>
+					<button type="submit" role="button" class="btn btn-primary btn-xs" name="command" >
+						<span class="glyphicon glyphicon-search"></span>
+						<?php echo $this->translate('Search')?>
+					</button>
+				</form>-->
+		</div>
+	</div>
+
+

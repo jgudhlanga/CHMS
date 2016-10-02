@@ -1,0 +1,61 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/23/2016
+ * Time: 11:31 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ *
+ */
+$aProject= $this->aProject;
+$sDateStarted = ($aProject['date_started'] > 0) ? date('D d M Y', $aProject['date_started']) : 'Not Set';
+$sEndDate = ($aProject['end_date'] > 0) ? date('D d M Y', $aProject['end_date']) : 'Not Set';
+$sDateCreated = ($aProject['date_created'] > 0) ? date('D d M Y', $aProject['date_created']) : 'Not Set';
+$sManager = isset($aProject['firstname']) ? $aProject['firstname'] . ' ' . $aProject['surname'] : 'Not Set';
+$sActivate = ($aProject['is_active'] == 1) ? 'Deactivate' : 'Activate';
+$sActivateClass = ($aProject['is_active'] == 1) ? 'warning' : 'success';
+$sActivateIcon = ($aProject['is_active'] == 1) ? 'ban-circle' : 'check';
+$sCost = (isset($aProject['project_cost']) && $aProject['project_cost'] > 0) ? number_format($aProject['project_cost'], 2) : '';
+$sStatus = '';
+echo '<div class="row">';
+		echo loadAlertMessage();
+	echo '<div class="col-md-6">
+		<table class="table table-responsive table-striped">
+			<thead>
+				<tr><td colspan="2"><div class="jjdev-page-header">'.$this->translate('Project Full View').'</div></td></tr>
+			</thead>
+			<tbody>
+				<tr><td class="caption">'.$this->translate('Name').'</td><td>'.$aProject['project'].'</td></tr>
+				<tr><td class="caption">'.$this->translate('Short Name').'</td><td>'.$aProject['short_name'].'</td></tr>
+				<tr><td class="caption">'.$this->translate('Project Manager').'</td><td>'.$sManager.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Date Created').'</td><td>'.$sDateCreated.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Start Date').'</td><td>'.$sDateStarted.'</td></tr>
+				<tr><td class="caption">'.$this->translate('End Date').'</td><td>'.$sEndDate.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Status').'</td><td>'.$sStatus.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Project Cost').'</td><td>'.$sCost.'</td></tr>
+				<tr><td class="caption">'.$this->translate('Description').'</td><td>'.$aProject['description'].'</td></tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-6">
+		<button type="button" role="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+			<span class="glyphicon glyphicon-edit"></span>
+			'.$this->translate('Edit').'
+		</button>
+		<button type="button" role="button" class="btn btn-'.$sActivateClass.' btn-sm"
+			onclick="url(\''.$this->baseUrl().'/chms/activate-project/command/'.$sActivate.'/project_id/'.$aProject['id'].'\')">
+			<span class="glyphicon glyphicon-'.$sActivateIcon.'"></span>
+			'.$this->translate($sActivate).'
+		</button>
+		<button type="button" role="button" class="btn btn-danger btn-sm"
+		onclick="return confirmDelete(\''.$this->baseUrl().'/chms/delete-project/\', '.$aProject['id'].')">
+			<span class="glyphicon glyphicon-trash"></span>
+			'.$this->translate('Delete').'
+		</button>
+	</div>
+</div>';
+
+/* ADD / EDIT PROJECT */
+$aFormParams = array('data'=>$aProject, 'action-button'=>'Save', 'target'=>$this->baseUrl().'/chms/save-project');
+echo createModalForm('Add/Edit Project', 'projects', $aFormParams);
+
