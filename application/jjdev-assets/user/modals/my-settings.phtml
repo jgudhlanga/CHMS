@@ -1,0 +1,62 @@
+<?php
+$aSettings = Bootstrap::getSystemOptions();
+$oForm = new Forms();
+$aFormParams = array('full-width' => 1, 'modal-form'=>1, 'modal-processing-message'=>'Processing', 'modal-success-message'=>'Settings Saved Successfully');
+$sForm = $oForm->generateForm('System Options', 'admin', $aSettings, $aFormParams);
+?>
+<div id="my-settings-modal" title="Update Your Preferences">
+	<?php echo $sForm ?>
+</div>
+
+<!-- ============================================= JAVASCRIPT =======================================================-->
+<script type="text/javascript">
+	$(function() {
+		$( "#my-settings-modal" ).dialog({
+			autoOpen: false,
+			height: 320,
+			width: 800,
+			modal: true,
+			buttons: {
+				"Save Preferences": function() {
+					$(function(){
+						$.ajax({
+								url: $('#my-url').val()+'/admin/save-system-options/format/json',
+								type: 'POST',
+								data: $('#my-settings-form').serialize(),
+								async: true,
+								success: function(response)
+								{
+
+								}
+							}
+						);
+					});
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			}
+		});
+
+		$( "#my-settings-link" ).click(function() {
+				$( "#my-settings-modal" ).dialog( "open" );
+			}
+		);
+		//show the image processing when ajax start
+		$('#processing').ajaxStart(function(){
+			$(this).show();
+		}).ajaxStop(function(){
+			$(this).hide();
+		})
+		$('#status').ajaxSuccess(function(){
+			$(this).show();
+			//location.href=''+$('#my-url').val()+'/index/index';
+			location.reload();
+		});
+		$('#status').ajaxError(function(){
+			$(this).html('<p class="text text-danger">An Error Happened!</p>').show();
+		});
+	});
+</script>

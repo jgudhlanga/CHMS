@@ -1,0 +1,69 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/16/2016
+ * Time: 10:10 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+$aMinistry = $this->aMinistry;
+$oForm = new Forms();
+$aFormParams = array('full-width' => 1, 'modal-form'=>1, 'modal-processing-message'=>'Saving', 'modal-success-message'=>'Ministry Saved Successfully');
+$sForm = $oForm->generateForm('Add/Edit Ministry', 'chms', $aMinistry, $aFormParams);
+?>
+<div id="add-edit-ministry" title="Add / Edit Ministry">
+	<?php echo $sForm ?>
+</div>
+
+<!-- ============================================= JAVASCRIPT =======================================================-->
+<script type="text/javascript">
+	$(function() {
+		$( "#add-edit-ministry" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 800,
+			modal: true,
+			buttons: {
+				"Save": function() {
+					$(function(){
+						$.ajax({
+								url: $('#my-url').val()+'/chms/save-ministry/format/json',
+								type: 'POST',
+								data: $('#form-add-edit-ministry').serialize(),
+								async: true,
+								success: function(response)
+								{
+
+								}
+							}
+						);
+					});
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			}
+		});
+
+		$( "#add-edit-ministry-btn" ).click(function() {
+				$( "#add-edit-ministry" ).dialog( "open" );
+			}
+		);
+		//show the image processing when ajax start
+		$('#processing').ajaxStart(function(){
+			$(this).show();
+		}).ajaxStop(function(){
+			$(this).hide();
+		})
+		$('#status').ajaxSuccess(function(){
+			$(this).show();
+			location.reload();
+		});
+		$('#status').ajaxError(function(){
+			$(this).html('<p class="text text-danger">An Error Happened!</p>').show();
+		});
+	});
+</script>

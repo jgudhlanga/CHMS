@@ -1,0 +1,69 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/26/2016
+ * Time: 7:33 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+$aVisitor = $this->aVisitor;
+$oForm = new Forms();
+$aFormParams = array('full-width' => 1, 'modal-form'=>1, 'modal-processing-message'=>'Saving', 'modal-success-message'=>'Visitor Saved Successfully');
+$sForm = $oForm->generateForm('Add/Edit Visitor', 'chms', $aVisitor, $aFormParams);
+?>
+<div id="add-edit-visitor" title="Add / Edit Visitor">
+	<?php echo $sForm ?>
+</div>
+
+<!-- ============================================= JAVASCRIPT =======================================================-->
+<script type="text/javascript">
+	$(function() {
+		$( "#add-edit-visitor" ).dialog({
+			autoOpen: false,
+			height: 420,
+			width: 800,
+			modal: true,
+			buttons: {
+				"Save": function() {
+					$(function(){
+						$.ajax({
+								url: $('#my-url').val()+'/chms/save-visitor/format/json',
+								type: 'POST',
+								data: $('#form-add-edit-visitor').serialize(),
+								async: true,
+								success: function(response)
+								{
+
+								}
+							}
+						);
+					});
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			}
+		});
+
+		$( "#add-edit-visitor-btn" ).click(function() {
+				$( "#add-edit-visitor" ).dialog( "open" );
+			}
+		);
+		//show the image processing when ajax start
+		$('#processing').ajaxStart(function(){
+			$(this).show();
+		}).ajaxStop(function(){
+			$(this).hide();
+		})
+		$('#status').ajaxSuccess(function(){
+			$(this).show();
+			location.reload();
+		});
+		$('#status').ajaxError(function(){
+			$(this).html('<p class="text text-danger">An Error Happened!</p>').show();
+		});
+	});
+</script>

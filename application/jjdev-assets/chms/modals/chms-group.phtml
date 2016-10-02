@@ -1,0 +1,69 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/16/2016
+ * Time: 7:24 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+$aGroup = $this->aGroup;
+$oForm = new Forms();
+$aFormParams = array('full-width' => 1, 'modal-form'=>1, 'modal-processing-message'=>'Saving', 'modal-success-message'=>'Group Saved Successfully');
+$sForm = $oForm->generateForm('Add/Edit Cell Group', 'chms', $aGroup, $aFormParams);
+?>
+<div id="add-edit-group" title="Add / Edit Group ">
+	<?php echo $sForm ?>
+</div>
+
+<!-- ============================================= JAVASCRIPT =======================================================-->
+<script type="text/javascript">
+	$(function() {
+		$( "#add-edit-group" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 800,
+			modal: true,
+			buttons: {
+				"Save": function() {
+					$(function(){
+						$.ajax({
+								url: $('#my-url').val()+'/chms/save-group/format/json',
+								type: 'POST',
+								data: $('#form-add-edit-group').serialize(),
+								async: true,
+								success: function(response)
+								{
+
+								}
+							}
+						);
+					});
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			}
+		});
+
+		$( "#add-edit-group-btn" ).click(function() {
+				$( "#add-edit-group" ).dialog( "open" );
+			}
+		);
+		//show the image processing when ajax start
+		$('#processing').ajaxStart(function(){
+			$(this).show();
+		}).ajaxStop(function(){
+			$(this).hide();
+		})
+		$('#status').ajaxSuccess(function(){
+			$(this).show();
+			location.reload();
+		});
+		$('#status').ajaxError(function(data){
+			$(this).html('<p class="text text-danger">An Error Happened!</p>').show();
+		});
+	});
+</script>

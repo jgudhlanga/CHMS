@@ -1,0 +1,70 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/17/2016
+ * Time: 9:22 PM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+
+$aDepartment = $this->aDepartment;
+$oForm = new Forms();
+$aFormParams = array('full-width' => 1, 'modal-form'=>1, 'modal-processing-message'=>'Saving', 'modal-success-message'=>'Department Saved Successfully');
+$sForm = $oForm->generateForm('Add/Edit Department', 'departments', $aDepartment, $aFormParams);
+?>
+<div id="add-edit-department" title="Add / Edit Department ">
+	<?php echo $sForm ?>
+</div>
+
+<!-- ============================================= JAVASCRIPT =======================================================-->
+<script type="text/javascript">
+	$(function() {
+		$( "#add-edit-department" ).dialog({
+			autoOpen: false,
+			height: 300,
+			width: 800,
+			modal: true,
+			buttons: {
+				"Save": function() {
+					$(function(){
+						$.ajax({
+								url: $('#my-url').val()+'/departments/save-department/format/json',
+								type: 'POST',
+								data: $('#form-add-edit-department').serialize(),
+								async: true,
+								success: function(response)
+								{
+
+								}
+							}
+						);
+					});
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			}
+		});
+
+		$( "#add-edit-department-btn" ).click(function() {
+				$( "#add-edit-department" ).dialog( "open" );
+			}
+		);
+		//show the image processing when ajax start
+		$('#processing').ajaxStart(function(){
+			$(this).show();
+		}).ajaxStop(function(){
+			$(this).hide();
+		})
+		$('#status').ajaxSuccess(function(){
+			$(this).show();
+			location.reload();
+		});
+		$('#status').ajaxError(function(){
+			$(this).html('<p class="text text-danger">An Error Happened!</p>').show();
+		});
+	});
+</script>

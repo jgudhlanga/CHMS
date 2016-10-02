@@ -1,0 +1,67 @@
+<?php
+/**
+ * Author: jimlink
+ * Date: 7/28/2016
+ * Time: 5:26 AM
+ * Copyright (c) JJDEV
+ * @version 1.0 (excellence)
+ */
+
+$oForm = new Forms();
+$aFormParams = array('full-width' => 1, 'modal-form'=>1, 'modal-processing-message'=>'Searching please wait', 'modal-success-message'=>'Search Complete ');
+$sForm = $oForm->generateForm('Chms Member Search', 'chms', $this->aPost, $aFormParams);
+?>
+<div id="chms-member-search" title="Search for Members">
+	<?php echo $sForm ?>
+</div>
+
+<!-- ============================================= JAVASCRIPT =======================================================-->
+<script type="text/javascript">
+	$(function() {
+		$( "#chms-member-search" ).dialog({
+			autoOpen: false,
+			height: 250,
+			width: 800,
+			modal: true,
+			buttons: {
+				"Search": function() {
+					$(function(){
+						$.ajax({
+								url: $('#my-url').val()+'/chms/member-search',
+								data: $('#form-search-member').serialize(),
+								success: function(data)
+								{
+ 									$('#search-results-container').html(data);
+								}
+							}
+						);
+					});
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			},
+			close: function() {
+			}
+		});
+
+		$( "#chms-member-search-btn" ).click(function() {
+				$( "#chms-member-search" ).dialog( "open" );
+			}
+		);
+		//show the image processing when ajax start
+		$('#processing').ajaxStart(function(){
+			$(this).show();
+		}).ajaxStop(function(){
+			$(this).hide();
+		})
+		$('#status').ajaxSuccess(function(response){
+			$(this).show();
+			$( "#chms-member-search" ).dialog( "close" );
+			return false;
+		});
+		$('#status').ajaxError(function(){
+			$(this).html('<p class="text text-danger">An Error Happened!</p>').show();
+		});
+	});
+</script>
